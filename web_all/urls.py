@@ -15,7 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from moivesDownload import mj
+from moivesDownload import fixDatebaseFromMail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('mv/', mj.loginAndDownload),
+    path('fixmv/', fixDatebaseFromMail.fixDatebase),
 ]
