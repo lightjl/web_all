@@ -14,9 +14,12 @@ import threading
 import os
 
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+
 
 logging.basicConfig(level=logging.CRITICAL, format='%(asctime)s - %(levelname)s -%(message)s')
 
+@csrf_exempt 
 def loginAndDownload(request):  # 登陆函数
     myMoives = moiveE.moives()
     header = {
