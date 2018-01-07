@@ -27,6 +27,9 @@ class moives:
         #if (moiveE.nameEnglish in self.sendedList):
         #    return
         if moiveE.ed2k:
+            mvs = Moive.objects.filter(name_En=moiveE.nameEnglish)
+            if len(mvs) != 0:
+                return
             logging.critical(moiveE.nameEnglish + ' ' + moiveE.nameOrigin)
             #self.sendedList.append(moiveE.nameEnglish)
             #sendMail.sendMail(moiveE.nameEnglish, moiveE.ed2kLink)#, receiver='presouce@163.com', sendFrom='163')
