@@ -11,7 +11,7 @@ class People(models.Model):
     name = models.CharField(max_length=20)
     
 class Statue_dm(models.Model):
-    statue = models.CharField(max_length=5)
+    statue = models.CharField(max_length=5, primary_key=True)
     means = models.CharField(max_length=20)
     
 class Watch(models.Model):
