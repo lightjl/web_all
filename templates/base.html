@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>{% block scripts-head %}{% endblock %}</head>
+<body>
+
+{% load static %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+
+<link rel="stylesheet" href="{% static 'js/bootstrap.js' %}">
+
+{% block bootstrap3_content %}
+
+<nav class="navbar navbar-default" role="navigation">
+
+    <div class="container-fluid">
+        <div class="container">
+            <h1>{% block title %}(no title){% endblock %}</h1>
+
+            <ul class="nav navbar-nav">
+                <li><a href="/">Home</a></li>
+            </ul>
+
+        </div>
+    </div>
+</nav>
+
+{% block content %}(no content){% endblock %}
+{% endblock %}
+
+{% block scripts %}
+{% endblock %}
+<script>{% block script-inline %}{% endblock %}</script>
+</body>
+</html>
+
+
+
+
+
+

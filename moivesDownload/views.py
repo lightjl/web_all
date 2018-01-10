@@ -7,4 +7,4 @@ from moivesDownload.models import Moive, People, Watch, Statue_dm
 
 def show(request):  # show
     
-    return render_to_response('moivesDownload/list.html', {'moives':Moive.objects.all()})
+    return render_to_response('moivesDownload/list.html', {'moives':Watch.objects.all(), 'dms':Statue_dm.objects.all()})
