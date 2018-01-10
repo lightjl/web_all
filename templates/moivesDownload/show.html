@@ -1,0 +1,40 @@
+
+
+{% load bootstrap3 %}
+
+{% bootstrap_css %}
+{% bootstrap_javascript %}
+
+{% load static %}
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="{% static 'DataTables/css/jquery.dataTables.min.css' %}">
+<!-- jquery -->
+<script src="{% static "js/jquery/jquery-2.0.0.js" %}" ></script>
+
+<!-- DataTables -->
+<script src="{% static "DataTables/js/jquery.dataTables.min.js" %}" ></script>
+
+
+
+<script>
+    $(document).ready( function () {
+        $('#table_id').DataTable();
+    } );
+</script>
+
+<table id="table_id" class="display">
+    <thead>
+    <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for moive in moives %}
+    <tr>
+        <td>{{moive.name_En}}</td>
+        <td>{{moive.downloadLink}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
