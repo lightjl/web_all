@@ -1,35 +1,17 @@
-{% extends 'base.html' %}
-
-
-
-{% block scripts %}
-
-
-{% load static %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- DataTables CSS -->
-<link rel="stylesheet" href="{% static 'DataTables/css/jquery.dataTables.min.css' %}">
-<!-- jquery -->
-<script src="{% static "js/jquery/jquery-2.0.0.js" %}" ></script>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
-<!-- DataTables -->
-<script src="{% static "DataTables/js/jquery.dataTables.min.js" %}" ></script>
-<link rel="stylesheet" href="{% static 'js/bootstrap.js' %}">
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
 
+    <script src="../../static/js/bootstrap.js" ></script>
 
-<script>
-    $(function() {
-        $(".dropdown-toggle").dropdown('toggle');
-    });
-</script>
-
-{% endblock %}
+</head>
 
 
-{% block title %}
-统计
-{% endblock %}
-
-{% block content %}
 <nav class="navbar navbar-default" role="navigation">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -72,6 +54,3 @@
     </div>
 </nav>
 </div>
-
-{% endblock %}
-

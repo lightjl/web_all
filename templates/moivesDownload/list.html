@@ -11,6 +11,9 @@
 <!-- jquery -->
 <script src="{% static "js/jquery/jquery-2.0.0.js" %}" ></script>
 
+<script src="{% static "js/bootstrap.js" %}" ></script>
+
+
 <!-- DataTables -->
 <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}" ></script>
 
@@ -29,12 +32,12 @@
 
 {% block content %}
 
-
-<select>
+<select class="form-control">
 	{% for dm in dms %}
-		<option value={{dm.id}}>{{dm.means}}</option>
+	<option value={{dm.id}}>{{dm.means}}</option>
 	{% endfor %}
 </select>
+
 <button type="button" class="btn btn-default">修改</button>
 
 <table id="table_id" class="display">
