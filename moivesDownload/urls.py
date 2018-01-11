@@ -21,4 +21,5 @@ from . import views
 urlpatterns = [
     path('show/', views.show),
     path('download/', mj.loginAndDownload),
+    path('test/', views.test),
 ]

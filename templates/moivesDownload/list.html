@@ -19,8 +19,61 @@
 
 <script>
     $(document).ready( function () {
+    	function getCookie(c_name)
+		{
+		    if (document.cookie.length > 0)
+		    {
+		        c_start = document.cookie.indexOf(c_name + "=");
+		        if (c_start != -1)
+		        {
+		            c_start = c_start + c_name.length + 1;
+		            c_end = document.cookie.indexOf(";", c_start);
+		            if (c_end == -1) c_end = document.cookie.length;
+		            return unescape(document.cookie.substring(c_start,c_end));
+		        }
+		    }
+		    return "";
+		 }
         $('#table_id').DataTable();
+		$.ajaxSetup({
+        	headers: { "X-CSRFToken": getCookie("csrftoken") }
+    	});
+        
+	    $('#change_id').click(function(){
+			var ids = [];  
+			var i = 0
+			$('[name=items]:checkbox:checked').each(function(){
+				ids[i] = $(this).val();  
+				i = i+1;
+			})
+			//alert(ids);
+			
+			//alert($('#dmid').val());
+			
+			$.post( "/mv/test/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,
+            csrfmiddlewaretoken: '{{ csrf_token  }}' } );
+  		});
+  		
+  		
+	    $("#CheckedAll").click(function(){
+			//所有checkbox跟着全选的checkbox走。
+			$('[name=items]:checkbox').attr("checked", this.checked );
+	 	});
+	 	
+	 	$('[name=items]:checkbox').click(function(){
+				//定义一个临时变量，避免重复使用同一个选择器选择页面中的元素，提升程序效率。
+				var $tmp=$('[name=items]:checkbox');
+				//用filter方法筛选出选中的复选框。并直接给CheckedAll赋值。
+				$('#CheckedAll').attr('checked',$tmp.length==$tmp.filter(':checked').length);
+
+			/*
+				//一行做过多的事情需要写更多注释。复杂选择器还可能影响效率。因此不推荐如下写法。
+				$('#CheckedAll').attr('checked',!$('[name=items]:checkbox').filter(':not(:checked)').length);
+			*/
+	 	});
+        
     } );
+    
 </script>
 
 {% endblock %}
@@ -32,18 +85,18 @@
 
 {% block content %}
 
-<select class="form-control">
+<select class="form-control" id="dmid">
 	{% for dm in dms %}
 	<option value={{dm.id}}>{{dm.means}}</option>
 	{% endfor %}
 </select>
 
-<button type="button" class="btn btn-default">修改</button>
+<button id="change_id" type="button" class="btn btn-default">修改</button>
 
 <table id="table_id" class="display">
 	<thead>
 	<tr>
-		<th>Column 1</th>
+		<th><input type="checkbox" id="CheckedAll"> all </input></th>
 		<th>id</th>
 		<th>Column 1</th>
 		<th>Column 2</th>
@@ -52,7 +105,7 @@
 	<tbody>
 	{% for moive in moives %}
 	<tr>
-		<td><input type="checkbox"> </td>
+		<td><input type="checkbox" name="items" value={{moive.id}}> </td>
 		<td>{{moive.id}} </td>
 		<td>{{moive.moive.name_En}}</td>
 		<td>{{moive.statue.means}}</td>
