@@ -60,7 +60,7 @@ def print_info(msg, indent=0):
 
 
 email = 'presouce@163.com'
-password = emailAccount.password
+password = emailAccount.password163
 pop3_server = 'pop.163.com'
 
 def checkMail(sub, days):

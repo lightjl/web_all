@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 import re
 from common import WorkInTime
-from moivesDownload import account
+import account
 from moivesDownload import moiveE
 from lxml import etree
 import logging

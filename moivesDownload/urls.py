@@ -17,9 +17,11 @@ from django.urls import path
 from . import fixDatebaseFromMail
 from . import mj
 from . import views
+from . import downloadbd
 
 urlpatterns = [
     path('show/', views.show),
     path('download/', mj.loginAndDownload),
     path('test/', views.test),
+    path('downloadbd/', downloadbd.downloadbd),
 ]

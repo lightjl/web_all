@@ -1,4 +1,4 @@
-from moivesDownload.models import Moive, People, Watch
+from moivesDownload.models import Moive, People, Watch, Statue_dm
 import logging
 
 
@@ -34,7 +34,11 @@ class moives:
             #self.sendedList.append(moiveE.nameEnglish)
             #sendMail.sendMail(moiveE.nameEnglish, moiveE.ed2kLink)#, receiver='presouce@163.com', sendFrom='163')
             mv = Moive(name_Zh=moiveE.nameOrigin, name_En = moiveE.nameEnglish, downloadLink = moiveE.ed2kLink)
+            p = People.objects.filter(name='me')[0]
+            st = Statue_dm.objects.filter(means="可下载")[0]
+            w = Watch(people=p, moive=mv, statue=st)
             mv.save()
+            w.save()
     
     def checkFailedNotice(self):
         sendMail.sendMail("check mv failed!!!!!!!!!!!", "check mv failed!!!!!!!!!!!")

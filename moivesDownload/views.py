@@ -3,12 +3,16 @@ from django.shortcuts import render, render_to_response
 from django.http import HttpResponse
 from moivesDownload.models import Moive, People, Watch, Statue_dm
 from django.views.decorators.csrf import csrf_exempt   
+from django.db.models import Count
 # Create your views here.
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s -%(message)s')
 
 def show(request):  # show
+    ws = Watch.objects.all().values('statue__id').annotate(total=Count('moive'))
+    logging.info(ws)
+    
     return render_to_response('moivesDownload/list.html', 
                               {'moives':Watch.objects.filter(people__name="me"), 
                                'dms':Statue_dm.objects.all()})

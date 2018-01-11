@@ -52,6 +52,9 @@
 			
 			$.post( "/mv/test/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,
             csrfmiddlewaretoken: '{{ csrf_token  }}' } );
+            setTimeout(function(){
+            	location.reload([true]) 
+         	},500)
   		});
   		
   		
@@ -64,7 +67,7 @@
 				//定义一个临时变量，避免重复使用同一个选择器选择页面中的元素，提升程序效率。
 				var $tmp=$('[name=items]:checkbox');
 				//用filter方法筛选出选中的复选框。并直接给CheckedAll赋值。
-				$('#CheckedAll').attr('checked',$tmp.length==$tmp.filter(':checked').length);
+				$('#CheckedAll').attr('checked',$tmp.length==$('[name=items]:checkbox').filter(':checked').length);
 
 			/*
 				//一行做过多的事情需要写更多注释。复杂选择器还可能影响效率。因此不推荐如下写法。

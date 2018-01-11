@@ -39,8 +39,8 @@ def sendMailPic(sub, context, pic, receiver='ming188199@hotmail.com', sendFrom='
             else:
                 smtp163 = smtplib.SMTP()
                 smtp163.connect('smtp.163.com')
-                smtp163.login(emailAccount.username, emailAccount.password)
-                smtp163.sendmail(emailAccount.username, receiver, msg.as_string())
+                smtp163.login(emailAccount.username163, emailAccount.password163)
+                smtp163.sendmail(emailAccount.username163, receiver, msg.as_string())
                 smtp163.quit()
         except Exception as e:
             print(e)
@@ -52,7 +52,7 @@ def sendMailPic(sub, context, pic, receiver='ming188199@hotmail.com', sendFrom='
                 tryNum += 1
                 if (changeReceiver or (tryNum > 10)):
                     sendFrom = '163'
-                    receiver = emailAccount.username
+                    receiver = emailAccount.username163
                     
 def sendMail(sub, context, receiver='ming188199@hotmail.com', sendFrom='hotmail', changeReceiver=False):
     

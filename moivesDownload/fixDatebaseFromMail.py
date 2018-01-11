@@ -15,7 +15,7 @@ def fixList(fold, mean, p, unreadFlag=False):
         mv = mvs[0]
         st = Statue_dm.objects.filter(means=mean)[0]
         ws = Watch.objects.filter(moive=mv)
-        if (len(ws) > 0):
+        if (len(ws) > 0):   #已存在记录
             ws[0].statue=st
             ws[0].save()
         else:
