@@ -9,6 +9,7 @@
 
 <script src="{% static 'js/bootstrap.js' %}" ></script>
 
+
 {% block bootstrap3_content %}
 
 <nav class="navbar navbar-default" role="navigation">
@@ -25,12 +26,45 @@
     </div>
 </nav>
 
-{% block content %}(no content){% endblock %}
-{% endblock %}
+
+<div class="container">
+<div class="row clearfix">
+    <div class="col-md-2 column">
+        <div class="panel-group" id="panel-216493">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title" data-toggle="collapse" data-parent="#panel-216493" href="#panel-element-148247">moives</a>
+                </div>
+                <div id="panel-element-148247" class="panel-collapse collapse in">
+                    <div class="panel-body">
+                        <li><a href="/mv/show/">moive_show</a></li>
+                        {% block Group1 %}(no content){% endblock %}
+                    </div>
+                </div>
+            </div>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <a class="panel-title" data-toggle="collapse" data-parent="#panel-216493" href="#panel-element-606567">Collapsible Group Item #2</a>
+                </div>
+                <div id="panel-element-606567" class="panel-collapse collapse">
+                    <div class="panel-body">
+                        Anim pariatur cliche...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-10 column">
+
+        {% block content %}(no content){% endblock %}
+        {% endblock %}
+    </div>
+</div>
+</div>
+
 
 {% block scripts %}
 {% endblock %}
-<script>{% block script-inline %}{% endblock %}</script>
 </body>
 </html>
 

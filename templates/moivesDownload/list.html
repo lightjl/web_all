@@ -4,7 +4,6 @@
 
 {% block scripts %}
 
-
 {% load static %}
 <!-- DataTables CSS -->
 <link rel="stylesheet" href="{% static 'DataTables/css/jquery.dataTables.min.css' %}">
@@ -12,6 +11,9 @@
 <script src="{% static "js/jquery/jquery-2.0.0.js" %}" ></script>
 
 <script src="{% static "js/bootstrap.js" %}" ></script>
+
+<script src="{% static "js/clipboard.js" %}" ></script>
+<script src="{% static "js/clipboard.min.js" %}" ></script>
 
 
 <!-- DataTables -->
@@ -50,14 +52,49 @@
 			
 			//alert($('#dmid').val());
 			
-			$.post( "/mv/test/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,
+			$.post( "/mv/change/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,
             csrfmiddlewaretoken: '{{ csrf_token  }}' } );
             setTimeout(function(){
             	location.reload([true]) 
          	},500)
   		});
-  		
-  		
+
+        var clipboard = new Clipboard('#link_id', {
+            text: function() {
+
+                var links = '';
+                $('[name=items]:checkbox:checked').each(function(){
+                    links += $(this).attr("href")+"\r\n";
+                })
+
+                //alert(links);
+                return links;
+            }
+        });
+
+
+        var clipboard = new Clipboard('#linkall_id', {
+            text: function() {
+
+                var links = '';
+                $('[name=items]:checkbox').each(function(){
+                    links += $(this).attr("href")+"\r\n";
+                })
+
+                //alert(links);
+                return links;
+            }
+        });
+
+        new Clipboard('.btn', {
+            text: function(trigger) {
+                return trigger.getAttribute('href');
+            }
+        });
+
+
+		//获取下载链接
+
 	    $("#CheckedAll").click(function(){
 			//所有checkbox跟着全选的checkbox走。
 			$('[name=items]:checkbox').attr("checked", this.checked );
@@ -86,6 +123,15 @@
     统计
 {% endblock %}
 
+
+{% block Group1 %}
+
+{% for w in ws %}
+	<li><a href="/mv/show/{{w.statue__id}}/">{{w.statue__means}} {{w.total}}</a></li>
+{% endfor %}
+
+{% endblock %}
+
 {% block content %}
 
 <select class="form-control" id="dmid">
@@ -95,21 +141,23 @@
 </select>
 
 <button id="change_id" type="button" class="btn btn-default">修改</button>
+<button id="link_id" type="button" class="btn btn-default">复制已选下载链接</button>
+<button id="linkall_id" type="button" class="btn btn-default">复制全部下载链接</button>
 
 <table id="table_id" class="display">
 	<thead>
 	<tr>
 		<th><input type="checkbox" id="CheckedAll"> all </input></th>
-		<th>id</th>
-		<th>Column 1</th>
-		<th>Column 2</th>
+		<th>复制</th>
+		<th>name</th>
+		<th>状态</th>
 	</tr>
 	</thead>
 	<tbody>
 	{% for moive in moives %}
 	<tr>
-		<td><input type="checkbox" name="items" value={{moive.id}}> </td>
-		<td>{{moive.id}} </td>
+		<td><input type="checkbox" name="items" value={{moive.id}} href="{{moive.moive.downloadLink}}"> </td>
+		<td><button class="btn" href="{{moive.moive.downloadLink}}">复制此下载链接</button></td>
 		<td>{{moive.moive.name_En}}</td>
 		<td>{{moive.statue.means}}</td>
 	</tr>

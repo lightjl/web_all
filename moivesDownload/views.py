@@ -10,16 +10,28 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s -%(message)s')
 
 def show(request):  # show
-    ws = Watch.objects.all().values('statue__id').annotate(total=Count('moive'))
-    logging.info(ws)
+    ws = Watch.objects.all().values('statue__id', 'statue__means').annotate(total=Count('moive'))
+    logging.debug(ws)
     
     return render_to_response('moivesDownload/list.html', 
                               {'moives':Watch.objects.filter(people__name="me"), 
-                               'dms':Statue_dm.objects.all()})
+                               'dms':Statue_dm.objects.all(),
+                               'ws':ws
+                               })
 
 
+def showdm(request, dm):  # show
+    ws = Watch.objects.all().values('statue__id', 'statue__means').annotate(total=Count('moive'))
+    logging.debug(ws)
+    
+    return render_to_response('moivesDownload/list.html', 
+                              {'moives':Watch.objects.filter(people__name="me", statue__id=dm), 
+                               'dms':Statue_dm.objects.all(),
+                               'ws':ws
+                               })
 
-def test(request):  # show
+
+def change(request):    # change the watch dm 改变watch的状态
     arrays = request.POST.getlist('ids[]')
     arrays = [int(x) for x in arrays]
     dmid = int(request.POST.getlist('dmid')[0])

@@ -21,7 +21,8 @@ from . import downloadbd
 
 urlpatterns = [
     path('show/', views.show),
+    path('show/<int:dm>/', views.showdm),
     path('download/', mj.loginAndDownload),
-    path('test/', views.test),
+    path('change/', views.change),
     path('downloadbd/', downloadbd.downloadbd),
 ]
