@@ -16,7 +16,8 @@ class People(models.Model):
         return ('%s' % (self.name))
     
 class Statue_dm(models.Model):
-    statue = models.CharField(max_length=5)
+    leave = models.CharField(max_length=1)
+    show = models.BooleanField(default=1)
     means = models.CharField(max_length=20)
     def __str__(self):
         return ('%s' % (self.means))

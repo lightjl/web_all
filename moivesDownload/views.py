@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from moivesDownload.models import Moive, People, Watch, Statue_dm
 from django.views.decorators.csrf import csrf_exempt   
 from django.db.models import Count
+from django.db.models import Q 
 # Create your views here.
 
 import logging
@@ -15,7 +16,7 @@ def show(request):  # show
     
     return render_to_response('moivesDownload/list.html', 
                               {'moives':Watch.objects.filter(people__name="me"), 
-                               'dms':Statue_dm.objects.all(),
+                               'dms':Statue_dm.objects.filter(show=1),
                                'ws':ws
                                })
 
@@ -23,10 +24,10 @@ def show(request):  # show
 def showdm(request, dm):  # show
     ws = Watch.objects.all().values('statue__id', 'statue__means').annotate(total=Count('moive'))
     logging.debug(ws)
-    
+    leave = Statue_dm.objects.filter(id=dm)[0]
     return render_to_response('moivesDownload/list.html', 
                               {'moives':Watch.objects.filter(people__name="me", statue__id=dm), 
-                               'dms':Statue_dm.objects.all(),
+                               'dms':Statue_dm.objects.filter(show=1, leave__gte=leave.leave).filter(~Q(id=dm)),
                                'ws':ws
                                })
 
