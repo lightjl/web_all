@@ -6,6 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Count
 from django.db.models import Q 
 # Create your views here.
+from django.views.decorators.csrf import csrf_exempt
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s -%(message)s')
@@ -32,6 +33,7 @@ def showdm(request, dm):  # show
                                })
 
 
+@csrf_exempt
 def change(request):    # change the watch dm 改变watch的状态
     arrays = request.POST.getlist('ids[]')
     arrays = [int(x) for x in arrays]
