@@ -7,7 +7,7 @@ import logging
 import calendar
 from datetime import datetime,timedelta,date
 from control.WorkInTime import WorkInTime
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s -%(message)s')
+logging.basicConfig(level=logging.CRITICAL, format='%(asctime)s - %(levelname)s -%(message)s')
 
 
         
@@ -22,8 +22,6 @@ class MyControl:
                 self.runable[r.id] = Value('b', r.runFlag)
             time.sleep(5)
             
-def testFun(a, b):
-    print("testFun")
 
 class MyRask:
     def __init__(self, runFlag, id):
@@ -34,7 +32,6 @@ class MyRask:
         while self.runFlag.value:
             
             timeB = eval('['+self.rask.timePeriod+']')
-            print(timeB)
             wk = WorkInTime(timeB, self.rask.timeRelax, weekday=self.rask.weekday)
             relaxNow = threading.Thread(target=wk.relax, args=(self.runFlag, self.rask.name))
             relaxNow.start()

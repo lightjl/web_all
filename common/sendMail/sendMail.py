@@ -76,8 +76,8 @@ def sendMail(sub, context, receiver='ming188199@hotmail.com', sendFrom='hotmail'
             else:
                 smtp163 = smtplib.SMTP()
                 smtp163.connect('smtp.163.com')
-                smtp163.login(emailAccount.username, emailAccount.password)
-                smtp163.sendmail(emailAccount.username, receiver, msg.as_string())
+                smtp163.login(emailAccount.username163, emailAccount.password163)
+                smtp163.sendmail(emailAccount.username163, receiver, msg.as_string())
                 smtp163.quit()
         except Exception as e:
             print(e)
@@ -89,7 +89,7 @@ def sendMail(sub, context, receiver='ming188199@hotmail.com', sendFrom='hotmail'
                 tryNum += 1
                 if (changeReceiver or (tryNum > 10)):
                     sendFrom = '163'
-                    receiver = emailAccount.username
+                    receiver = emailAccount.username163
 
 def sendToKindle(sub_folder, file_name):
     file_name = file_name + '.txt'
@@ -120,7 +120,7 @@ def sendToKindle(sub_folder, file_name):
     server = smtplib.SMTP()
     server.connect('smtp.163.com')
     #print("start login")
-    server.login(emailAccount.username, emailAccount.password)
+    server.login(emailAccount.username163, emailAccount.password163)
     #print("start sending email")
     server.sendmail(sender, kindleAddr, msg.as_string())
     server.quit()
@@ -144,7 +144,7 @@ def send_attachment_kd(sub_folder, file_name):
 
     server=smtplib.SMTP()
     server.connect('smtp.163.com')
-    server.login(emailAccount.username, emailAccount.password)
+    server.login(emailAccount.username163, emailAccount.password163)
     server.sendmail(sender, kindleAddr, msg.as_string())
     server.quit()
     print("Send %s successfully" % file_name)

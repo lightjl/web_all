@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bootstrap3',
 	'moivesDownload',
     'control',
+    'followXS',
 ]
 
 MIDDLEWARE = [

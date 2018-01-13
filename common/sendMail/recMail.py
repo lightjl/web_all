@@ -75,7 +75,7 @@ def checkMail(sub, days):
     while(tryFlag):
         try:
             server.user(email)
-            server.pass_(password)
+            server.pass_(password163)
             tryFlag =False
         except:
             tryFlag = True
@@ -128,7 +128,7 @@ def checkMailList(days):
             # 连接到POP3服务器:
             server = poplib.POP3(pop3_server)
             server.user(email)
-            server.pass_(password)
+            server.pass_(password163)
             tryFlag =False
         except:
             tryFlag = True

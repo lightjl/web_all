@@ -2,9 +2,8 @@ from multiprocessing import Process
 from control import control
 import threading
 import time
-import common.WorkInTime
 import logging
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s -%(message)s')
+logging.basicConfig(level=logging.CRITICAL, format='%(asctime)s - %(levelname)s -%(message)s')
     
 
 def RunRasks(c):

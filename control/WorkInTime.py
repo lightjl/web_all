@@ -41,7 +41,6 @@ class WorkInTime():
     # timeTrade = [['9:29', '11:30'], ['13:00', '15:00']]
     def relax(self, alive, name=''):
         self.relaxDay(alive)  #relaxDay
-        print("relax")
         timeBucket = self.__timeType
         while alive.value:
             timeNow = time.time()
