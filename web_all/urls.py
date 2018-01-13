@@ -19,8 +19,10 @@ import moivesDownload.urls
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
+import control.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mv/', include('moivesDownload.urls')),
+    path('', control.views.test),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

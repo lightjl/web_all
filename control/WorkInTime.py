@@ -1,36 +1,31 @@
-from datetime import *
-import calendar
-from datetime import datetime,timedelta
+from control.models import Rask
+from multiprocessing import Process, Value
 import time
-from multiprocessing import Value
+import threading
 import logging
+import calendar
+from datetime import datetime,timedelta,date
 
-#logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s -%(message)s')
-#timeBucket=[[时间起，时间止]，[时间点]*2]
-#从小到大排序，不支持跨日
 class WorkInTime():
-    def __init__(self, timeBucket, relaxTime=60, addTime=4.6, weekday='All'):    #工作时间段和冗余时间,run weekday
+    def __init__(self, timeBucket, relaxTime, weekday): 
         self.__time = timeBucket
         self.__weekday = weekday
         self.sleep_time = 60
         now = datetime.now()
-        self.__timeType = [[time.mktime(time.strptime(str(now.year) + '-' + str(now.month) + '-' + str(now.day) +\
-                            ' ' + i + ':00', '%Y-%m-%d %H:%M:%S')) for i in timeB] for timeB in self.__time[:]
-                         ]
-
-        self.__timeType233 = [[i for i in timeB] for timeB in self.__time[:]
-                         ]
-        self.__addTime = addTime      #冗余时间
-        self.__relaxTime = relaxTime    #休息时间
+        self.__timeType = [[time.mktime(time.strptime(str(now.year) + '-' + str(now.month) + '-' + str(now.day) +' ' + i + ':00', '%Y-%m-%d %H:%M:%S')) for i in timeB] for timeB in self.__time[:] ]
+        # self.timeType233 = [[i for i in timeB] for timeB in self.__time[:]]
+        # self.addTime = 4.6
+        self.__relaxTime = relaxTime
         self.__newday = True
         self.__today = date.today()
-        self.fromWitch = -2 # 从哪个休息区来 , -2为未初始化
+        self.fromWitch = -2 # from where -2 first time
         self.fromRelaxFlag = True
-
+        logging.debug("WorkInTime init")
     def changeRelaxTime(self, relaxTime):
-        self.__relaxTime = relaxTime    #休息时间
-
+        logging.debug("changeRelaxTime")
+        self.__relaxTime = relaxTime
     def __resetTime(self):
+        logging.debug("__resetTime")
         now = datetime.now()
         self.__today = date.today()
         self.__timeType = [[time.mktime(time.strptime(str(now.year) + '-' + str(now.month) + '-' + str(now.day) +\
@@ -38,70 +33,69 @@ class WorkInTime():
                          ]
     def relaxDay(self, alive):
         #print(self.__today.weekday())
-        if self.__weekday == 'All':
+        if self.__weekday == 'All' or self.__weekday == 'all':
             return
         while str(self.__today.weekday()) not in self.__weekday and alive.value:
             self.__today = date.today()
             time.sleep(self.sleep_time)
-
     # timeTrade = [['9:29', '11:30'], ['13:00', '15:00']]
     def relax(self, alive, name=''):
         self.relaxDay(alive)  #relaxDay
+        print("relax")
         timeBucket = self.__timeType
         while alive.value:
             timeNow = time.time()
             #logging.debug(name)
             working = False
-            if (timeNow > timeBucket[-1][1]):      #大于一天终止时间
+            if (timeNow > timeBucket[-1][1]):      # 
                 self.fromRelaxFlag = True
                 if (self.fromWitch == -2):
                     self.fromWitch = -1
-                if (self.fromWitch != -1):  #错过最后一班车
+                if (self.fromWitch != -1):  # miss last one 
                     self.fromWitch = -1
                     break
-                logging.debug(name + '大于一天终止时间 time relax')
+                logging.debug(name + ' bigger than last one time relax')
                 time.sleep(self.sleep_time)
-                logging.debug(name + '大于一天终止时间 time out')
+                logging.debug(name + ' bigger than last one time out')
                 self.__resetTime()
                 timeBucket = self.__timeType
-            elif timeNow < timeBucket[0][0]:      #小于一天开始时间
-                logging.debug(name + '小于一天开始时间 time relax')
+            elif timeNow < timeBucket[0][0]:      #
+                logging.debug(name + ' smaller than first time relax')
                 time.sleep(self.sleep_time)
-                logging.debug(name + '小于一天开始时间 time out')
-                self.fromWitch = 0  #还没开始发车
+                logging.debug(name + ' smaller than first time out')
+                self.fromWitch = 0  #before first one
                 self.fromRelaxFlag = True
             else:
                 for i in range(len(timeBucket)-1)[::-1]:
                     if (timeNow > timeBucket[i][1] and timeNow < timeBucket[i+1][0]):
-                        if(self.fromWitch != i+1):  #上个工作周期未工作
+                        if(self.fromWitch != i+1):  # last work time
                             self.fromWitch = i+1
                             break
-                        logging.debug(name + '中场 time relax')
+                        logging.debug(name + ' mid time relax')
                         time.sleep(self.sleep_time)
-                        logging.debug(name + '中场 time out')
+                        logging.debug(name + ' mid time out')
                         self.fromRelaxFlag = True
                     elif (timeNow <= timeBucket[i][1] and timeNow >= timeBucket[i][0]):
-                           #工作区
                         working = True
-                        self.fromWitch = i+1  #第n个工作周期
+                        self.fromWitch = i+1  #nth working
                         break
                 if(timeNow >= timeBucket[-1][0] and timeNow <= timeBucket[-1][1]):
-                       #最后一个工作区
+                    # last work
                     self.fromWitch = -1
                     working = True
             if(working):
                 break
         relaxTime = self.__relaxTime
         while alive.value:
-            if self.fromRelaxFlag:   # 睡毛线，起来工作
+            if self.fromRelaxFlag:   #
                 self.fromRelaxFlag = False
                 break
-            logging.debug(name + 'work relaxtime: ' + str(relaxTime))
+            logging.debug(name + ' work relaxtime: ' + str(relaxTime))
             time.sleep(self.sleep_time)
             relaxTime -= self.sleep_time
             if(relaxTime <= 0):
                 break
-        logging.debug(name + 'working')
+        logging.debug(name + ' working')
 
 
 '''
