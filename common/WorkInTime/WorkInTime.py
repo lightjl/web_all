@@ -24,6 +24,7 @@ class WorkInTime():
         self.__relaxTime = relaxTime    #休息时间
         self.__newday = True
         self.__today = date.today()
+        self.fromWitch = -2 # 从哪个休息区来 , -2为未初始化
 
     def changeRelaxTime(self, relaxTime):
         self.__relaxTime = relaxTime    #休息时间
@@ -57,11 +58,15 @@ class WorkInTime():
                 logging.debug(name + '大于一天终止时间 time out')
                 self.__resetTime()
                 timeBucket = self.__timeType
+                if (self.fromWitch != -1):  #错过最后一班车
+                    self.fromWitch = -1
+                    break
             elif timeNow < timeBucket[0][0]:      #小于一天开始时间
                 logging.debug(name + '小于一天开始时间 time relax')
                 time.sleep(self.sleep_time)
                 logging.debug(name + '小于一天开始时间 time out')
                 fromRelaxFlag = True
+                self.fromWitch = 0  #还没开始发车
             else:
                 for i in range(len(timeBucket)-1)[::-1]:
                     if (timeNow > timeBucket[i][1] and timeNow < timeBucket[i+1][0]):
@@ -72,6 +77,7 @@ class WorkInTime():
                     elif (timeNow <= timeBucket[i][1] and timeNow >= timeBucket[i][0]):
                            #工作区
                         working = True
+                        self.fromWitch = i+1  #第n个工作周期
                         break
                 if(timeNow >= timeBucket[-1][0] and timeNow <= timeBucket[-1][1]):
                        #最后一个工作区
