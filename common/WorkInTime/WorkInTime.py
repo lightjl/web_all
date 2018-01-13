@@ -25,6 +25,7 @@ class WorkInTime():
         self.__newday = True
         self.__today = date.today()
         self.fromWitch = -2 # 从哪个休息区来 , -2为未初始化
+        self.fromRelaxFlag = True
 
     def changeRelaxTime(self, relaxTime):
         self.__relaxTime = relaxTime    #休息时间
@@ -47,33 +48,38 @@ class WorkInTime():
     def relax(self, alive, name=''):
         self.relaxDay(alive)  #relaxDay
         timeBucket = self.__timeType
-        fromRelaxFlag = False
         while alive.value:
             timeNow = time.time()
             #logging.debug(name)
             working = False
             if (timeNow > timeBucket[-1][1]):      #大于一天终止时间
+                self.fromRelaxFlag = True
+                if (self.fromWitch == -2):
+                    self.fromWitch = -1
+                if (self.fromWitch != -1):  #错过最后一班车
+                    self.fromWitch = -1
+                    break
                 logging.debug(name + '大于一天终止时间 time relax')
                 time.sleep(self.sleep_time)
                 logging.debug(name + '大于一天终止时间 time out')
                 self.__resetTime()
                 timeBucket = self.__timeType
-                if (self.fromWitch != -1):  #错过最后一班车
-                    self.fromWitch = -1
-                    break
             elif timeNow < timeBucket[0][0]:      #小于一天开始时间
                 logging.debug(name + '小于一天开始时间 time relax')
                 time.sleep(self.sleep_time)
                 logging.debug(name + '小于一天开始时间 time out')
-                fromRelaxFlag = True
                 self.fromWitch = 0  #还没开始发车
+                self.fromRelaxFlag = True
             else:
                 for i in range(len(timeBucket)-1)[::-1]:
                     if (timeNow > timeBucket[i][1] and timeNow < timeBucket[i+1][0]):
+                        if(self.fromWitch != i+1):  #上个工作周期未工作
+                            self.fromWitch = i+1
+                            break
                         logging.debug(name + '中场 time relax')
                         time.sleep(self.sleep_time)
                         logging.debug(name + '中场 time out')
-                        fromRelaxFlag = True
+                        self.fromRelaxFlag = True
                     elif (timeNow <= timeBucket[i][1] and timeNow >= timeBucket[i][0]):
                            #工作区
                         working = True
@@ -81,18 +87,19 @@ class WorkInTime():
                         break
                 if(timeNow >= timeBucket[-1][0] and timeNow <= timeBucket[-1][1]):
                        #最后一个工作区
+                    self.fromWitch = -1
                     working = True
             if(working):
                 break
         relaxTime = self.__relaxTime
-        logging.debug(name + 'work relax')
         while alive.value:
-            if fromRelaxFlag:   # 睡毛线，起来工作
+            if self.fromRelaxFlag:   # 睡毛线，起来工作
+                self.fromRelaxFlag = False
                 break
+            logging.debug(name + 'work relaxtime: ' + str(relaxTime))
             time.sleep(self.sleep_time)
             relaxTime -= self.sleep_time
-            logging.debug(name + 'work relaxtime: ' + str(relaxTime))
-            if(relaxTime < 0):
+            if(relaxTime <= 0):
                 break
         logging.debug(name + 'working')
 
@@ -111,3 +118,14 @@ logging.info('time relax')
 wt.relax(a)
 logging.info('time out')
 '''
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s -%(message)s')
+    wt = WorkInTime([['14:45']*2,['14:46']*2])
+    wt = WorkInTime([['15:06', '15:07'], ['15:08']*2 ])
+    wt = WorkInTime([['15:27']*2 ])
+    runFlag = Value('b', True)
+    logging.critical('beg:' +  datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    while True:
+        wt.relax(runFlag)
+        logging.critical('work:' + datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    
