@@ -67,8 +67,7 @@ def dowithDownload(status, moive, downloadDmSuccess, downloadDmFail):
 def downloadbd(request):
     moives = Moive.objects.filter(watch__people__name="me", watch__statue__means="要下载")
     for mv in moives:
-        print(mv.name_En)
-        print(mv.downloadLink)
+        logging.debug(mv.name_En + ' ' + mv.downloadLink)
     if (len(moives)==0):
         return HttpResponse("no mv to download")
     browser = webdriver.Firefox()

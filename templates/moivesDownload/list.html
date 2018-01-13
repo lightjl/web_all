@@ -19,28 +19,47 @@
 <!-- DataTables -->
 <script src="{% static "DataTables/js/jquery.dataTables.min.js" %}" ></script>
 
+
 <script>
     $(document).ready( function () {
-    	function getCookie(c_name)
-		{
-		    if (document.cookie.length > 0)
-		    {
-		        c_start = document.cookie.indexOf(c_name + "=");
-		        if (c_start != -1)
-		        {
-		            c_start = c_start + c_name.length + 1;
-		            c_end = document.cookie.indexOf(";", c_start);
-		            if (c_end == -1) c_end = document.cookie.length;
-		            return unescape(document.cookie.substring(c_start,c_end));
-		        }
-		    }
-		    return "";
-		 }
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
         $('#table_id').DataTable();
-		$.ajaxSetup({
-        	headers: { "X-CSRFToken": getCookie("csrftoken") }
-    	});
-        
+
+        jQuery(document).ajaxSend(function(event, xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+
+			xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        });
+
 	    $('#change_id').click(function(){
 			var ids = [];  
 			var i = 0
@@ -49,11 +68,10 @@
 				i = i+1;
 			})
 			//alert(ids);
-			
 			//alert($('#dmid').val());
-			
-			$.post( "/mv/change/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,
-            csrfmiddlewaretoken: '{{ csrf_token  }}' } );
+
+
+			$.post( "/mv/change/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,csrfmiddlewaretoken: '{{ csrf_token }}' } );
             setTimeout(function(){
             	location.reload([true]) 
          	},500)

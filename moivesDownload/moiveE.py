@@ -20,25 +20,43 @@ class moives:
     def __init__(self):
         #self.sendedList = imMail.checkMailFolderList(['mv', 'downloaded', 'downloading'])
         #logging.debug(self.sendedList)
-        self.people = People.objects.filter(name='me')
+        self.people = People.objects.filter(name='me')[0]
         pass
+    
+    def Mv(self, moiveE):
+        mv = Moive(name_Zh=moiveE.nameOrigin, name_En = moiveE.nameEnglish, downloadLink = moiveE.ed2kLink)
+        mv.save()
+        return mv
+    
+    def saveW(self, mv):
+        
+        st = Statue_dm.objects.filter(means="可下载")[0]
+        w = Watch(people=self.people, moive=mv, statue=st)
+        w.save()
     
     def send(self, moiveE):
         #if (moiveE.nameEnglish in self.sendedList):
         #    return
         if moiveE.ed2k:
             mvs = Moive.objects.filter(name_En=moiveE.nameEnglish)
-            if len(mvs) != 0:
-                return
-            logging.critical(moiveE.nameEnglish + ' ' + moiveE.nameOrigin)
+            if (len(mvs) > 0):
+                # print(mvs[0])
+                ws = Watch.objects.filter(moive=mvs[0])
+                if (len(ws) > 0):
+                    return
+                else:
+                    #print(mvs)
+                    logging.critical(moiveE.nameEnglish + ' ' + moiveE.nameOrigin)
+                    self.saveW(mvs[0])
+            else:
+                logging.critical(moiveE.nameEnglish + ' ' + moiveE.nameOrigin)
+                self.saveW(self.Mv(moiveE))
             #self.sendedList.append(moiveE.nameEnglish)
             #sendMail.sendMail(moiveE.nameEnglish, moiveE.ed2kLink)#, receiver='presouce@163.com', sendFrom='163')
-            mv = Moive(name_Zh=moiveE.nameOrigin, name_En = moiveE.nameEnglish, downloadLink = moiveE.ed2kLink)
-            p = People.objects.filter(name='me')[0]
-            st = Statue_dm.objects.filter(means="可下载")[0]
-            w = Watch(people=p, moive=mv, statue=st)
-            mv.save()
-            w.save()
+            
+            
+            
+            
     
     def checkFailedNotice(self):
         sendMail.sendMail("check mv failed!!!!!!!!!!!", "check mv failed!!!!!!!!!!!")

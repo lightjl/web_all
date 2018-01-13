@@ -39,8 +39,8 @@ def loginAndDownload(request):  # 登陆函数
     #print(login_session.status_code)
     #print(_cookies.get_dict())
     url = 'http://www.zimuzu.tv/user/fav'
-    time.sleep(5)
     f = login_session.get(url)
+    time.sleep(5)
     selector = etree.HTML(f.text)
     # print(selector)
     ## /html/body/div[4]/div/div/div[2]/div/ul/li[1] /div[2]/ul/li[1] /a[1]/span
@@ -58,12 +58,15 @@ def loginAndDownload(request):  # 登陆函数
     for each in content_field:
         moives = each.xpath('./div[2]/ul/li')
         for moive in moives:
-            name = moive.xpath('./a[1]/span/text()')[0]
-            link = moive.xpath('./div/div/div/a[2]/@href')[0]
-            mv = moiveE.moiveE(name, link)
-            myMoives.send(mv)
-            # print(moive.xpath('./a[1]/span/text()')[0])
-            # print(moive.xpath('./div/div/div/a[2]/@href')[0])
+            try:
+                name = moive.xpath('./a[1]/span/text()')[0]
+                link = moive.xpath('./div/div/div/a[2]/@href')[0]
+                mv = moiveE.moiveE(name, link)
+                myMoives.send(mv)
+                # print(moive.xpath('./a[1]/span/text()')[0])
+                # print(moive.xpath('./div/div/div/a[2]/@href')[0])
+            except:
+                continue
     # print(f.content.decode())
 
     # logging.critical('well done')
