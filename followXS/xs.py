@@ -124,6 +124,7 @@ class XS:
         #print(zjs)
 
         # /html/body/div[6]
+        logging.critical("following " + self.name)
         if ("cc" in self.name):
             self.sodu(selector)
         elif("sodu3" in url or "sodu888" in url):

@@ -29,10 +29,11 @@ class MyRask:
         self.rask = Rask.objects.get(id=id)
     
     def run(self):
+        timeB = eval('['+self.rask.timePeriod+']')
+        wk = WorkInTime(timeB, self.rask.timeRelax, weekday=self.rask.weekday)
+        # todo change timeB when timeB changed
         while self.runFlag.value:
             
-            timeB = eval('['+self.rask.timePeriod+']')
-            wk = WorkInTime(timeB, self.rask.timeRelax, weekday=self.rask.weekday)
             relaxNow = threading.Thread(target=wk.relax, args=(self.runFlag, self.rask.name))
             relaxNow.start()
             logging.debug(self.rask.name)
