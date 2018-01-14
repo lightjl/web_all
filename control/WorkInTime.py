@@ -65,7 +65,6 @@ class WorkInTime():
             else:
                 for i in range(len(timeBucket)-1)[::-1]:
                     if (timeNow > timeBucket[i][1] and timeNow < timeBucket[i+1][0]):
-                        print(self.fromWitch)
                         if(self.fromWitch != i+1):  # last work time
                             self.fromWitch = i+1
                             working = True
