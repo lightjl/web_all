@@ -27,7 +27,7 @@ def change(request, id):  # show
     rask.save()
     return HttpResponse(id)
 
-def run(request, id):  # show
+def run(request, id):  # run once
     logging.critical(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     #print(runflag)
     rask = Rask.objects.get(id=id)
