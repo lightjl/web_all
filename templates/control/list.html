@@ -1,0 +1,184 @@
+﻿{% extends 'base.html' %}
+
+
+
+{% block scripts %}
+
+{% load static %}
+<!-- jquery -->
+<script src="{% static "js/jquery/jquery-2.0.0.js" %}" ></script>
+
+<script src="{% static "js/bootstrap.js" %}" ></script>
+<script src="{% static "js/bootstrap-switch.js" %}" ></script>
+
+<!-- DataTables -->
+<script src="{% static "DataTables/js/jquery.dataTables.min.js" %}" ></script>
+<script src="{% static "js/clipboard.js" %}" ></script>
+<script src="{% static "js/clipboard.min.js" %}" ></script>
+
+
+<!-- DataTables CSS -->
+<link rel="stylesheet" href="{% static 'DataTables/css/jquery.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap-switch.css' %}">
+
+
+
+<script>
+    $(document).ready( function () {
+        function getCookie(name) {
+            var cookieValue = null;
+            if (document.cookie && document.cookie != '') {
+                var cookies = document.cookie.split(';');
+                for (var i = 0; i < cookies.length; i++) {
+                    var cookie = jQuery.trim(cookies[i]);
+                    // Does this cookie string begin with the name we want?
+                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+        $('#table_id').DataTable();
+
+        $("[name='my-checkbox']").bootstrapSwitch();
+        $("[name='rask-checkbox']").bootstrapSwitch();
+        $("[name='rask-checkbox']").on('switchChange.bootstrapSwitch', function (event, state) {
+
+            //alert(event.target.checked);
+            //alert($(this).val())
+            $.post( "/control/change/"+$(this).val().toString()+"/", { 'runFlag': event.target.checked,csrfmiddlewaretoken: '{{ csrf_token }}' } );
+		});
+
+        jQuery(document).ajaxSend(function(event, xhr, settings) {
+            function getCookie(name) {
+                var cookieValue = null;
+                if (document.cookie && document.cookie != '') {
+                    var cookies = document.cookie.split(';');
+                    for (var i = 0; i < cookies.length; i++) {
+                        var cookie = jQuery.trim(cookies[i]);
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+			xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+        });
+
+	    $("[name='rask-button']").click(function(){
+			//alert($(this).val());
+			//alert($('#dmid').val());
+
+            $.get( "/control/run/"+$(this).val().toString()+"/");
+
+			//$.post( "/mv/change/", { 'ids[]': ids,  'dmid': $('#dmid').val() ,csrfmiddlewaretoken: '{{ csrf_token }}' } );
+
+  		});
+
+        var clipboard = new Clipboard('#link_id', {
+            text: function() {
+
+                var links = '';
+                $('[name=items]:checkbox:checked').each(function(){
+                    links += $(this).attr("href")+"\r\n";
+                })
+
+                //alert(links);
+                return links;
+            }
+        });
+
+
+        var clipboard = new Clipboard('#linkall_id', {
+            text: function() {
+
+                var links = '';
+                $('[name=items]:checkbox').each(function(){
+                    links += $(this).attr("href")+"\r\n";
+                })
+
+                //alert(links);
+                return links;
+            }
+        });
+
+        new Clipboard('.btn', {
+            text: function(trigger) {
+                return trigger.getAttribute('href');
+            }
+        });
+
+
+		//获取下载链接
+
+	    $("#CheckedAll").click(function(){
+			//所有checkbox跟着全选的checkbox走。
+			$('[name=items]:checkbox').attr("checked", this.checked );
+	 	});
+	 	
+	 	$('[name=items]:checkbox').click(function(){
+				//定义一个临时变量，避免重复使用同一个选择器选择页面中的元素，提升程序效率。
+				var $tmp=$('[name=items]:checkbox');
+				//用filter方法筛选出选中的复选框。并直接给CheckedAll赋值。
+				$('#CheckedAll').attr('checked',$tmp.length==$('[name=items]:checkbox').filter(':checked').length);
+
+			/*
+				//一行做过多的事情需要写更多注释。复杂选择器还可能影响效率。因此不推荐如下写法。
+				$('#CheckedAll').attr('checked',!$('[name=items]:checkbox').filter(':not(:checked)').length);
+			*/
+	 	});
+
+    } );
+    
+</script>
+
+{% endblock %}
+
+
+{% block title %}
+    统计
+{% endblock %}
+
+
+{% block Group1 %}
+
+{% for w in ws %}
+	<li><a href="/mv/show/{{w.statue__id}}/">{{w.statue__means}} {{w.total}}</a></li>
+{% endfor %}
+
+{% endblock %}
+
+{% block content %}
+<input type="checkbox" name="my-checkbox" data-off-text="All off" data-on-text="All on"  checked>
+
+
+<table id="table_id" class="display">
+	<thead>
+	<tr>
+		<th>状态</th>
+		<th>运行一次</th>
+		<th>name</th>
+		<th>timePeriod</th>
+	</tr>
+	</thead>
+	<tbody>
+	{% for r in rasks %}
+	<tr>
+		<td><input type="checkbox" name="rask-checkbox" {%if r.runFlag %} checked  {%endif%} value={{r.id}} "> </td>
+		<td><button value={{r.id}} name="rask-button" class="btn btn-default">运行一次</button> </td>
+		<td>{{r.name}}</td>
+		<td>{{r.timePeriod}}</td>
+	</tr>
+	{% endfor %}
+	</tbody>
+</table>
+
+{% endblock %}
+

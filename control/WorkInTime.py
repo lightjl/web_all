@@ -10,7 +10,7 @@ class WorkInTime():
     def __init__(self, timeBucket, relaxTime, weekday): 
         self.__time = timeBucket
         self.__weekday = weekday
-        self.sleep_time = 60
+        self.sleep_time = min(60, relaxTime)
         now = datetime.now()
         self.__timeType = [[time.mktime(time.strptime(str(now.year) + '-' + str(now.month) + '-' + str(now.day) +' ' + i + ':00', '%Y-%m-%d %H:%M:%S')) for i in timeB] for timeB in self.__time[:] ]
         # self.timeType233 = [[i for i in timeB] for timeB in self.__time[:]]
@@ -48,8 +48,6 @@ class WorkInTime():
             working = False
             if (timeNow > timeBucket[-1][1]):      # 
                 self.fromRelaxFlag = True
-                if (self.fromWitch == -2):
-                    self.fromWitch = -1
                 if (self.fromWitch != -1):  # miss last one 
                     self.fromWitch = -1
                     break
@@ -67,8 +65,10 @@ class WorkInTime():
             else:
                 for i in range(len(timeBucket)-1)[::-1]:
                     if (timeNow > timeBucket[i][1] and timeNow < timeBucket[i+1][0]):
+                        print(self.fromWitch)
                         if(self.fromWitch != i+1):  # last work time
                             self.fromWitch = i+1
+                            working = True
                             break
                         logging.debug(name + ' mid time relax')
                         time.sleep(self.sleep_time)

@@ -18,6 +18,7 @@ from django.urls import path
 import moivesDownload.urls
 import followXS.urls
 import xjgl.urls
+import control.urls
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -25,6 +26,7 @@ import control.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('control/', include('control.urls')),
     path('mv/', include('moivesDownload.urls')),
     path('xs/', include('followXS.urls')),
     path('xjgl/', include('xjgl.urls')),
