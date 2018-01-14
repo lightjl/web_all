@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 	'moivesDownload',
     'control',
     'followXS',
+    'xjgl',
 ]
 
 MIDDLEWARE = [
