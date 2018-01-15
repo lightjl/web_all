@@ -5,3 +5,6 @@ account.py
 emailAccount.py
 
 __pycache__/
+/geckodriver.log
+/.settings/
+/.idea/
