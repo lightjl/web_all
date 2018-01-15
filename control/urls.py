@@ -19,4 +19,5 @@ from . import views
 urlpatterns = [
     path('change/<int:id>/', views.change),
     path('run/<int:id>/', views.run),
+    path('', views.show),
 ]

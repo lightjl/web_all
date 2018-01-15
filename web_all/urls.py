@@ -22,7 +22,9 @@ import control.urls
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
-import control.views
+import moivesDownload.views
+from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -30,5 +32,6 @@ urlpatterns = [
     path('mv/', include('moivesDownload.urls')),
     path('xs/', include('followXS.urls')),
     path('xjgl/', include('xjgl.urls')),
-    path('', control.views.test),
+    path('', moivesDownload.views.show),
+    path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

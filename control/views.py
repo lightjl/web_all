@@ -10,8 +10,12 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s -%(message)s')
 from control.models import Rask
 import requests
+from django.contrib.auth.decorators import login_required, permission_required
 
-def test(request):  # show
+
+@login_required
+@permission_required('control.add_rask', raise_exception=True) # app + 
+def show(request):  # show
     logging.critical(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
     #return HttpResponse('Don\'t say hello')
     rasks = Rask.objects.all()
