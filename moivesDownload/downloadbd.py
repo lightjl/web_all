@@ -4,7 +4,6 @@ sys.path.append('..')
 
 from lxml import etree
 import requests
-import sendMail
 import time
 import logging
 from selenium import webdriver
