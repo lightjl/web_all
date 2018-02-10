@@ -11,6 +11,7 @@ import datetime
 import email
 from email import encoders
 import time
+from pathlib import Path
 
 sender = 'presouce@163.com'
 smtpserver = 'smtp.163.com'
@@ -125,21 +126,19 @@ def sendToKindle(sub_folder, file_name):
     server.sendmail(sender, kindleAddr, msg.as_string())
     server.quit()
 
-def send_attachment_kd(sub_folder, file_name):
+def send_attachment_kd(file):
     kindleAddr = 'yamieborn_1@kindle.cn'
     msg = MIMEMultipart()
-    msg['Subject'] = 'convert: 小说 ' + file_name
+    print(file.name)
+    msg['Subject'] = 'convert: 小说 ' + file.name
     msg['From'] = sender
     msg['To'] = "Your Kindle" + "<" + kindleAddr + ">"
     part = email.mime.base.MIMEBase('application', "octet-stream")
     #fpath=os.path.join(KINDLE_DIR,filename)
-    filename_txt = sub_folder + file_name + ".txt"
-    #print filename_txt.decode('utf-8'
-    filecontent=open((filename_txt),'rb').read()
-    part.set_payload(filecontent)
+    part.set_payload(file.read_bytes())
     encoders.encode_base64(part)
 
-    part.add_header('Content-Disposition', 'attachment', filename=file_name+ '.txt')
+    part.add_header('Content-Disposition', 'attachment', filename=file.name)
     msg.attach(part)
 
     server=smtplib.SMTP()
@@ -147,7 +146,9 @@ def send_attachment_kd(sub_folder, file_name):
     server.login(emailAccount.username163, emailAccount.password163)
     server.sendmail(sender, kindleAddr, msg.as_string())
     server.quit()
-    print("Send %s successfully" % file_name)
+    file.unlink()
+    
+    print("Send %s successfully" % file.name)
 
 '''
 sub_folder = os.path.join(os.getcwd(), "/xs/")
