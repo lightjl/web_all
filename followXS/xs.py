@@ -30,7 +30,7 @@ class XS:
     def sendToKindle(self, filename, url=''):
         sendHotmail = threading.Thread(target=sendMail.sendMail, args=(filename, \
                 'xs:'+filename+'\n'+url, 'ming188199@hotmail.com', 'hotmail', False))
-        # sendHotmail.start()
+        sendHotmail.start()
         
         # sendMail.sendMail(filename, 'xs:'+filename, receiver='ming188199@hotmail.com', sendFrom='hotmail')
         
