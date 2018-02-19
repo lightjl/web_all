@@ -143,8 +143,8 @@ def send_attachment_kd(file):
 
     server=smtplib.SMTP()
     server.connect('smtp.163.com')
-    server.login(emailAccount.username163, emailAccount.password163)
-    server.sendmail(sender, kindleAddr, msg.as_string())
+    server.login(emailAccount.sjmail, emailAccount.sjpass)
+    server.sendmail(emailAccount.sjmail, kindleAddr, msg.as_string())
     server.quit()
     file.unlink()
     

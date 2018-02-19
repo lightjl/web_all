@@ -7,7 +7,7 @@ import calendar
 from datetime import datetime,timedelta,date
 
 class WorkInTime():
-    def __init__(self, timeBucket, relaxTime, weekday): 
+    def __init__(self, timeBucket, relaxTime = 60, weekday = 'all'): 
         self.__time = timeBucket
         self.__weekday = weekday
         self.sleep_time = min(60, relaxTime)
