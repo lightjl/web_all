@@ -143,8 +143,27 @@ def send_attachment_kd(file):
 
     server=smtplib.SMTP()
     server.connect('smtp.163.com')
-    server.login(emailAccount.sjmail, emailAccount.sjpass)
-    server.sendmail(emailAccount.sjmail, kindleAddr, msg.as_string())
+    mailname = emailAccount.sjmail
+    mailpass = emailAccount.sjpass
+
+    #mailname = emailAccount.username163
+    #mailname = emailAccount.password163
+    '''
+    mailname = emailAccount.icloudname
+    mailpass = emailAccount.icloudpass
+    server.connect('smtp.mail.me.com')
+    server.ehlo()
+    server.starttls()
+
+    mailname = emailAccount.hotname
+    mailpass = emailAccount.hotpass
+    server.connect('smtp-mail.outlook.com')
+    server.ehlo()
+    server.starttls() 
+    '''
+
+    server.login(mailname, mailpass)
+    server.sendmail(mailname, kindleAddr, msg.as_string())
     server.quit()
     file.unlink()
     
