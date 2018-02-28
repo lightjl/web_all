@@ -25,7 +25,7 @@ SECRET_KEY = 'y5ov*9evqzn%rh63skmxk+*8wns#&o3whm(mx14$!!#sc(tv)@'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.111', 'meanhot.free.ngrok.cc']
+ALLOWED_HOSTS = ['192.168.0.111', '192.168.1.111', 'meanhot.free.ngrok.cc']
 #ALLOWED_HOSTS = ['192.168.16.109','192.168.16.10']
 ALLOWED_HOSTS += ['127.0.0.1']
 
