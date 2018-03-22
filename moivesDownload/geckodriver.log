@@ -1,0 +1,51 @@
+1521694898669	geckodriver	INFO	geckodriver 0.19.1
+1521694898684	geckodriver	INFO	Listening on 127.0.0.1:56357
+1521694900342	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.y2hXdWOskg2I"
+1521694910745	Marionette	INFO	Listening on port 34463
+1521694910921	Marionette	WARN	TLS certificate errors will be ignored for this session
+1521695051976	geckodriver	INFO	geckodriver 0.19.1
+1521695051988	geckodriver	INFO	Listening on 127.0.0.1:53935
+1521695053360	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.Wzq3u1gHvdYw"
+1521695059400	Marionette	INFO	Listening on port 33977
+1521695059578	Marionette	WARN	TLS certificate errors will be ignored for this session
+1521695199067	geckodriver	INFO	geckodriver 0.19.1
+1521695199080	geckodriver	INFO	Listening on 127.0.0.1:38421
+1521695200688	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.oyGVki9nJ0AH"
+1521695207219	Marionette	INFO	Listening on port 39917
+1521695207429	Marionette	WARN	TLS certificate errors will be ignored for this session
+1521695646749	geckodriver	INFO	geckodriver 0.19.1
+1521695646760	geckodriver	INFO	Listening on 127.0.0.1:49595
+1521695648183	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.RxHnGbWANYXQ"
+1521695654898	Marionette	INFO	Listening on port 39749
+1521695655075	Marionette	WARN	TLS certificate errors will be ignored for this session
+1521696053579	geckodriver	INFO	geckodriver 0.19.1
+1521696053599	geckodriver	INFO	Listening on 127.0.0.1:34407
+1521696055211	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.nIKXxhfE2e7c"
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+JavaScript error: resource://gre/components/nsUrlClassifierListManager.js, line 287: NS_ERROR_NOT_INITIALIZED: Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIUrlClassifierDBService.getTables]
+JavaScript error: resource://gre/components/nsUrlClassifierListManager.js, line 287: NS_ERROR_NOT_INITIALIZED: Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIUrlClassifierDBService.getTables]
+1521696056929	Marionette	INFO	Ceased listening
+1521696062903	Marionette	INFO	Listening on port 36747
+1521696063086	Marionette	WARN	TLS certificate errors will be ignored for this session
+
+###!!! [Parent][RunMessage] Error: Channel closing: too late to send/recv, messages will be lost
+
+JavaScript error: resource://gre/components/nsUrlClassifierListManager.js, line 287: NS_ERROR_NOT_INITIALIZED: Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIUrlClassifierDBService.getTables]
+JavaScript error: resource://gre/components/nsUrlClassifierListManager.js, line 287: NS_ERROR_NOT_INITIALIZED: Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIUrlClassifierDBService.getTables]
+1521696362056	Marionette	INFO	Ceased listening
+1521696426992	geckodriver	INFO	geckodriver 0.19.1
+1521696427008	geckodriver	INFO	Listening on 127.0.0.1:57215
+1521696428376	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.I0hXRpt0HYJQ"
+1521696435941	Marionette	INFO	Listening on port 35299
+1521696436120	Marionette	WARN	TLS certificate errors will be ignored for this session
+1521696703304	geckodriver	INFO	geckodriver 0.19.1
+1521696703319	geckodriver	INFO	Listening on 127.0.0.1:40561
+1521696704951	mozrunner::runner	INFO	Running command: "/usr/bin/firefox" "-marionette" "-profile" "/tmp/rust_mozprofile.9n2vVEBo2KD8"
+JavaScript error: resource://gre/components/nsUrlClassifierListManager.js, line 287: NS_ERROR_NOT_INITIALIZED: Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIUrlClassifierDBService.getTables]
+JavaScript error: resource://gre/components/nsUrlClassifierListManager.js, line 287: NS_ERROR_NOT_INITIALIZED: Component returned failure code: 0xc1f30001 (NS_ERROR_NOT_INITIALIZED) [nsIUrlClassifierDBService.getTables]
+1521696706450	Marionette	INFO	Ceased listening
+1521696712383	Marionette	INFO	Listening on port 40815
+1521696712556	Marionette	WARN	TLS certificate errors will be ignored for this session
+1521696863245	Marionette	INFO	New connections will no longer be accepted

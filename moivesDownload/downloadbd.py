@@ -32,8 +32,9 @@ def login(browser):
     time.sleep(6)
     
 def knowButtonClick(browser):
+    time.sleep(1)
     try:
-        browser.find_element_by_xpath('//div[@id="dialog1"]/div[2]/div/div[2]/span').click()
+        browser.find_element_by_xpath('//div[@class="know-button"]').click()
         time.sleep(1)
     except:
         return
@@ -64,59 +65,61 @@ def dowithDownload(status, moive, downloadDmSuccess, downloadDmFail):
         # //*[@id="confirm"]/div[3]/a[1]/span
         return moive.name_En + '下载失败\r\n'
 
+def startBrower():
+    browser = webdriver.Firefox()
+    browser.get('https://pan.baidu.com')
+    time.sleep(4)
+    login(browser)
+    time.sleep(4)
+    #input('login youself!')
+    browser.get('https://pan.baidu.com/disk/home?#/all?vmode=list&path=%2Fmoive')
+    knowButtonClick(browser)
+    # 离线下载
+    browser.find_element_by_xpath('//a[@data-button-id="b35"]').click()
+    return browser
+
+def downloadLink(browser, link):
+    if link.startswith('ed2k'):   # ed2k
+        time.sleep(4)
+        # 新建链接
+        browser.find_element_by_xpath('//*[@id="_disk_id_2"]/span/span').click()
+        time.sleep(1)
+        browser.find_element_by_xpath('//*[@id="share-offline-link"]').send_keys(link)
+        browser.find_element_by_xpath('//*[@id="newoffline-dialog"]/div[3]/a[2]').click()
+
+        time.sleep(6)
+        # //*[@id="OfflineListView"]/dd[1]/div[3]/span[2]
+        status = browser.find_element_by_xpath('//*[@id="OfflineListView"]/dd[1]/div[3]/span[2]')
+    elif link.startswith('magnet'):   # magnet
+        time.sleep(4)
+        # 新建链接
+        browser.find_element_by_xpath('//*[@id="_disk_id_2"]/span/span').click()
+        time.sleep(1)
+        browser.find_element_by_xpath('//*[@id="share-offline-link"]').send_keys(link)
+        browser.find_element_by_xpath('//*[@id="newoffline-dialog"]/div[3]/a[2]').click()
+        time.sleep(9)
+        browser.find_element_by_xpath('//*[@id="offlinebtlist-dialog"]/div[3]/a[2]/span').click()
+
+        time.sleep(6)
+        # //*[@id="OfflineListView"]/dd[1]/div[3]/span[2]
+        status = browser.find_element_by_xpath('//*[@id="OfflineListView"]/dd[1]/div[3]/span[2]')
+        # 下载情况处理
+    return status
+
 def downloadbd(request):
     moives = Moive.objects.filter(watch__people__name="me", watch__statue__means="要下载")
     for mv in moives:
         logging.debug(mv.name_En + ' ' + mv.downloadLink)
     if (len(moives)==0):
         return HttpResponse("no mv to download")
-    browser = webdriver.Firefox()
-    browser.get('https://pan.baidu.com/disk/home?#list/vmode=list&path=%2Fmoive')
-    time.sleep(4)
-    login(browser)
-    time.sleep(4)
-    #input('login youself!')
-    browser.get('https://pan.baidu.com/disk/home?#list/vmode=list&path=%2Fmoive')
-    time.sleep(6)
-    knowButtonClick(browser)
-    # 离线下载
-    browser.find_element_by_xpath('//a[@data-button-id="b13"]').click()
-    downloadNum = 0
-    downloadTotal = 10
-    showText = ''
+    browser = startBrower()
     downloadDmSuccess = Statue_dm.objects.filter(means="在百度云")[0]
     downloadDmFail = Statue_dm.objects.filter(means="百度下载失败")[0]
+    showText = ''
     for moive in moives:
-        if moive.downloadLink.startswith('ed2k'):   # ed2k
-            time.sleep(4)
-            # 新建链接
-            browser.find_element_by_xpath('//*[@id="_disk_id_2"]/span/span').click()
-            time.sleep(1)
-            browser.find_element_by_xpath('//*[@id="share-offline-link"]').send_keys(moive.downloadLink)
-            browser.find_element_by_xpath('//*[@id="newoffline-dialog"]/div[3]/a[2]').click()
-            if(overDownloadNum(browser)):
-                break
-            time.sleep(6)
-            # //*[@id="OfflineListView"]/dd[1]/div[3]/span[2]
-            status = browser.find_element_by_xpath('//*[@id="OfflineListView"]/dd[1]/div[3]/span[2]')
-            # 下载情况处理
-            showText += dowithDownload(status, moive, downloadDmSuccess, downloadDmFail)
-        elif moive.downloadLink.startswith('magnet'):   # magnet
-            time.sleep(4)
-            # 新建链接
-            browser.find_element_by_xpath('//*[@id="_disk_id_2"]/span/span').click()
-            time.sleep(1)
-            browser.find_element_by_xpath('//*[@id="share-offline-link"]').send_keys(moive.downloadLink)
-            browser.find_element_by_xpath('//*[@id="newoffline-dialog"]/div[3]/a[2]').click()
-            time.sleep(9)
-            browser.find_element_by_xpath('//*[@id="offlinebtlist-dialog"]/div[3]/a[2]/span').click()
-            if(overDownloadNum(browser)):
-                break
-            time.sleep(6)
-            # //*[@id="OfflineListView"]/dd[1]/div[3]/span[2]
-            status = browser.find_element_by_xpath('//*[@id="OfflineListView"]/dd[1]/div[3]/span[2]')
-            # 下载情况处理
-            showText += dowithDownload(status, moive, downloadDmSuccess, downloadDmFail)
+        status = downloadLink(browser, moive.downloadLink)
+         # 下载情况处理
+        showText += dowithDownload(status, moive, downloadDmSuccess, downloadDmFail)
     browser.quit()
     return HttpResponse(showText)
         
@@ -134,3 +137,12 @@ def downloadbd(request):
     # //*[@id="OfflineListView"]/dd[2]/div[3]/span[2] 
     '''
 
+
+def downloadLocal(link):
+    browser = startBrower()
+    print(downloadLink(browser, link))
+    browser.quit()
+    
+if __name__ == "__main__":
+    link = 'ed2k://|file|神盾局特工.Marvels.Agents.of.S.H.I.E.L.D.S05E13.中英字幕.HDTVrip.720P-人人影视.mp4|505753085|d92492963357cbe25465c881c45b73a2|h=ijf6i2hoakg4moh5ewkqap7vdeqdtcas|/'
+    downloadLocal(link)
