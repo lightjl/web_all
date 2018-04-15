@@ -34,7 +34,7 @@ def login(browser):
 def knowButtonClick(browser):
     time.sleep(1)
     try:
-        browser.find_element_by_xpath('//div[@class="know-button"]').click()
+        browser.find_element_by_xpath('//p[@class="tip-button"]').click()
         time.sleep(1)
     except:
         return
