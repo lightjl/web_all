@@ -6,6 +6,9 @@ from followXS.models import Xs, Chapter
 class XsAdmin(admin.ModelAdmin):
     list_display = ('rask', 'url')
     fields = ('rask', 'url')
+
+class XsChapter(admin.ModelAdmin):
+    list_display = ('name',)
     
 admin.site.register(Xs, XsAdmin)
-admin.site.register(Chapter)
+admin.site.register(Chapter, XsChapter)

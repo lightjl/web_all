@@ -30,13 +30,13 @@ class XS:
     def sendToKindle(self, filename, url=''):
         sendHotmail = threading.Thread(target=sendMail.sendMail, args=(filename, \
                 'xs:'+filename+'\n'+url, 'ming188199@hotmail.com', 'hotmail', False))
-        sendHotmail.start()
         
         # sendMail.sendMail(filename, 'xs:'+filename, receiver='ming188199@hotmail.com', sendFrom='hotmail')
         
         if '第' in filename:
             logging.debug("更新了"+filename)
             sendMail.send_attachment_kd(self.__getContent.getSavePath().joinpath(filename+'.txt'))
+        # sendHotmail.start()
 
         
     def getZjName(self, webSite, zj):

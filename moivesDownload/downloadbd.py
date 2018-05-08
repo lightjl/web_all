@@ -32,12 +32,14 @@ def login(browser):
     time.sleep(6)
     
 def knowButtonClick(browser):
-    time.sleep(1)
-    try:
-        browser.find_element_by_xpath('//p[@class="tip-button"]').click()
-        time.sleep(1)
-    except:
-        return
+    path_list = ['//p[@class="tip-button"]', '//div[@class="know-button"]']
+    for path in path_list:
+        try:
+            browser.find_element_by_xpath(path).click()
+            time.sleep(1)
+        except:
+            pass
+    
     
 def overDownloadNum(browser):
     time.sleep(4)
