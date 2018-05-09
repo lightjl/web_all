@@ -1,10 +1,13 @@
+# -*- coding: UTF-8 -*-
 from moivesDownload.models import Moive, People, Watch, Statue_dm
 import logging
 
 
 # 判断一个unicode是否是英文字母
-def is_alphabet(uchar):         
+def is_alphabet(uchar):  
     if ('\u0041' <= uchar<='\u005a') or ('\u0061' <= uchar<='\u007a'):
+        return True
+    elif ('a' <= uchar <= 'z') or ('A' <= uchar <= 'Z'):
         return True
     else:
         return False
@@ -65,20 +68,11 @@ class moives:
         pass
         # imMail.moveMail(nameEnglish, 'downloading', 'downloaded')
 
-class moiveE:
-    def __init__(self, nameOrigin, ed2kLink):
-        self.nameOrigin = nameOrigin
-        self.ed2kLink = ed2kLink
-        self.__changeEnglishName()
-        if ed2kLink.startswith('ed2k') or ed2kLink.startswith('magnet:'):
-            self.ed2k = True
-        else:
-            self.ed2k = False
-        
-    def __changeEnglishName(self):
+class NameEng:
+    def __init__(self, nameOrigin):
         nameEnglish = ''
         nameBegin = False
-        for i in self.nameOrigin:
+        for i in nameOrigin:
             if(is_alphabet(i)):
                 nameBegin = True
             if nameBegin:
@@ -86,7 +80,17 @@ class moiveE:
                     nameEnglish += i
                 else:
                     break
-        self.nameEnglish = nameEnglish
+        self.name = nameEnglish
+
+class moiveE:
+    def __init__(self, nameOrigin, ed2kLink):
+        self.nameOrigin = nameOrigin
+        self.ed2kLink = ed2kLink
+        self.nameEnglish = NameEng(nameOrigin).name
+        if ed2kLink.startswith('ed2k') or ed2kLink.startswith('magnet:'):
+            self.ed2k = True
+        else:
+            self.ed2k = False
         
     def display(self):
         print(self.nameEnglish + " " + self.nameOrigin)

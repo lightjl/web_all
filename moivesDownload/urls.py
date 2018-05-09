@@ -18,11 +18,13 @@ from . import fixDatebaseFromMail
 from . import mj
 from . import views
 from . import downloadbd
+from . import moiveDisk
 
 urlpatterns = [
     path('show/', views.show),
     path('show/<int:dm>/', views.showdm),
     path('download/', mj.loginAndDownload),
     path('change/', views.change),
+    path('changeauto/', moiveDisk.changeWatchDm),
     path('downloadbd/', downloadbd.downloadbd),
 ]
