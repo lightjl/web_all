@@ -32,7 +32,6 @@ class moives:
         return mv
     
     def saveW(self, mv):
-        
         st = Statue_dm.objects.filter(means="可下载")[0]
         w = Watch(people=self.people, moive=mv, statue=st)
         w.save()
@@ -56,9 +55,6 @@ class moives:
                 self.saveW(self.Mv(moiveE))
             #self.sendedList.append(moiveE.nameEnglish)
             #sendMail.sendMail(moiveE.nameEnglish, moiveE.ed2kLink)#, receiver='presouce@163.com', sendFrom='163')
-            
-            
-            
             
     
     def checkFailedNotice(self):

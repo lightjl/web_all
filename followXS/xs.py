@@ -7,7 +7,6 @@ import datetime
 import threading
 import logging
 from common.sendMail import imMail
-import threading
 from followXS.models import Xs, Chapter
 from common.saveFile import saveTxt
 

@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'control',
     'followXS',
     'xjgl',
+    'smzdm',
 ]
 
 MIDDLEWARE = [

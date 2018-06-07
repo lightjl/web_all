@@ -18,6 +18,7 @@ from django.urls import path
 import moivesDownload.urls
 import followXS.urls
 import xjgl.urls
+import smzdm.urls
 import control.urls
 from django.conf.urls import url, include
 from django.conf import settings
@@ -32,6 +33,7 @@ urlpatterns = [
     path('mv/', include('moivesDownload.urls')),
     path('xs/', include('followXS.urls')),
     path('xjgl/', include('xjgl.urls')),
+    path('mmm/', include('smzdm.urls')),
     path('', moivesDownload.views.show),
     path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
