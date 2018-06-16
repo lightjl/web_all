@@ -5,6 +5,7 @@ import threading
 import re
 from django.http import HttpResponse
 from smzdm.models import zdmSp, zdmWeb
+from common.sendMail import sendMail
 
 
 def checkWeb(browser, url):
@@ -22,9 +23,12 @@ def checkWeb(browser, url):
             by = True
         else:
             by = False
+        
         price = re.search('[.0-9]*元', yhStr)
         if price:
             je = float((price.group())[:-1])
+        else:
+            je = 0
         # print(yhStr)
         gxsj = (li.find_element_by_xpath('./div/div[2]/div[2]/div[2]/span').text)
         sps = zdmSp.objects.filter(hwmc=hwmc, gxsj=gxsj)
@@ -32,12 +36,18 @@ def checkWeb(browser, url):
             break
         sp = zdmSp(hwmc=hwmc, mj=mj, by=by, je=je, url=url, bz=yhStr, gxsj=gxsj)
         sp.save()
+        if not ('-' in gxsj):
+            sendHotmail = threading.Thread(target=sendMail.sendMail,\
+                        args=(hwmc + ' ' + str(je), \
+                    'smzdm:' + hwmc + ' ' + str(je) + '\n'+url, 'ming188199@hotmail.com', 'hotmail', False))
+            sendHotmail.start() # 邮件通知
 
 def checkAll():
     urls = zdmWeb.objects.all()
     browser = webdriver.Firefox()
     for url in urls:
          checkWeb(browser, url.url)
+    browser.quit()
 
 def smzdm(request):
     checkAll()

@@ -11,7 +11,7 @@ class zdmWebAdmin(admin.ModelAdmin):
     fields = ('name', 'url')
 
 class zdmSpAdmin(admin.ModelAdmin):
-    list_display = ('hwmc','je', 'by', 'mj', 'url', 'zqrq')
+    list_display = ('hwmc','je', 'by', 'mj', 'url', 'zqrq', 'gxsj')
     
 admin.site.register(zdmWeb, zdmWebAdmin)
 admin.site.register(zdmSp, zdmSpAdmin)
