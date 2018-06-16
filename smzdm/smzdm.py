@@ -11,8 +11,11 @@ from common.sendMail import sendMail
 def checkWeb(browser, url):
     browser.get(url)
     lis = browser.find_elements_by_xpath('//*[@id="feed-main-list"]/li')
+    plus = False # 没京东plus会员
     for li in lis:
         hwmc = (li.find_element_by_xpath('./div/div[2]/h5/a[1]').text)
+        if (not plus) and ('PLUS' in hwmc):
+            continue
         url = (li.find_element_by_xpath('./div/div[2]/h5/a[1]').get_attribute("href"))
         yhStr = li.find_element_by_xpath('./div/div[2]/h5/a[2]/div').text
         if '满' in yhStr:
@@ -39,7 +42,9 @@ def checkWeb(browser, url):
         if not ('-' in gxsj):
             sendHotmail = threading.Thread(target=sendMail.sendMail,\
                         args=(hwmc + ' ' + str(je), \
-                    'smzdm:' + hwmc + ' ' + str(je) + '\n'+url, 'ming188199@hotmail.com', 'hotmail', False))
+                    'smzdm:' + hwmc + ' ' + str(je) + '\n' \
+                    + yhStr + '\n' \
+                    +url, 'ming188199@hotmail.com', 'hotmail', False))
             sendHotmail.start() # 邮件通知
 
 def checkAll():
