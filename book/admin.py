@@ -1,5 +1,5 @@
 from django.contrib import admin
-
+     
 # Register your models here.
 
 from book.models import Book, Read, People, Statue_dm
@@ -16,7 +16,7 @@ class PeopleAdmin(admin.ModelAdmin):
     
 class ReadAdmin(admin.ModelAdmin):
     list_display = ('people','book', 'statue', 'cs')
-    fields = ('statue', 'cs')
+    fields = ('people','book','statue', 'cs')
     
 admin.site.register(Book, BookAdmin)
 admin.site.register(People, PeopleAdmin)

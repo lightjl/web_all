@@ -20,6 +20,7 @@ import followXS.urls
 import xjgl.urls
 import smzdm.urls
 import control.urls
+import book.views
 from django.conf.urls import url, include
 from django.conf import settings
 from django.conf.urls.static import static
@@ -34,6 +35,7 @@ urlpatterns = [
     path('xs/', include('followXS.urls')),
     path('xjgl/', include('xjgl.urls')),
     path('mmm/', include('smzdm.urls')),
+    path('mebook/', book.views.CheckMeBook),
     path('', moivesDownload.views.show),
     path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
