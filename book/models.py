@@ -32,4 +32,4 @@ class Read(models.Model):
     cs = models.SmallIntegerField()
     
     def __str__(self):
-        return ('%s %s %s %d' % (self.book.bookname, self.tags, self.statue.means, self.cs))
+        return ('%s %s %s %d' % (self.book.bookname, self.book.tags, self.statue.means, self.cs))
