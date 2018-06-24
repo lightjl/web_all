@@ -1,4 +1,3 @@
-
 import account
 from selenium import webdriver
 import time
@@ -31,3 +30,17 @@ class BaiduPan:
                 time.sleep(1)
             except:
                 pass
+    
+    def zz(self, link, mm=None):
+        browser.get(link)
+        if mm:
+            browser.find_element_by_xpath('//*[@id="fkbQ5Wq"]').send_keys(mm)
+            browser.find_element_by_xpath('//*[@id="uivs0k6Q"]/a/span').click()
+        # choose all
+        browser.find_element_by_xpath('//*[@id="shareqr"]/div[2]/div[2]/div/ul[1]/li[1]/div').click()
+        # save
+        browser.find_element_by_xpath('//*[@id="bd-main"]/div/div[1]/div/div[2]/div/div/div[2]/a[1]/span/span').click()
+        time.sleep(6)
+        # yes
+        browser.find_element_by_xpath('//*[@id="fileTreeDialog"]/div[3]/a[2]/span/span').click()
+        
