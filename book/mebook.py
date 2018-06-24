@@ -51,3 +51,21 @@ def mebook(startPage, endPage):
                 #print(theBook.bookName + ' ' + theBook.zz + ' ' + theBook.gxrq)
         print('the %d page done' % i)
         
+def downloadMebook(url):
+    html = requests.get(url)
+    selector = etree.HTML(html.text)
+    downloadlink = selector.xpath('//*[@id="content"]/div/p[6]/strong/a/@href')[0]
+    
+    htmlMebook = requests.get(downloadlink)
+    selector = etree.HTML(htmlMebook.text)
+    
+    bdmmstr = (selector.xpath('/html/body/div[3]/p[6]/text()')[0])
+    bdmm = (re.search('百度网盘密码：[a-z0-9]*', bdmmstr))
+    if bdmm:
+        mm = ((bdmm.group()).split('：')[1])
+        pans = selector.xpath('/html/body/div[5]/a')
+        for pan in pans:
+            if '百度' in str(pan.xpath('./text()')):
+                bddownload = (pan.xpath('./@href')[0])
+                print(bddownload)
+                return mm, bddownload
