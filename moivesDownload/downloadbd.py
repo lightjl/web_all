@@ -15,31 +15,10 @@ from common.sendMail import imMail
 from moivesDownload.models import Moive, People, Watch, Statue_dm
 from django.http import HttpResponse
 import account
+from common.baiduPan import bdpan
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s -%(message)s')
 
-def login(browser):
-    # //*[@id="login-middle"]/div/div[6]/div[2]/a
-    time.sleep(19)
-    browser.find_element_by_xpath('//*[@id="TANGRAM__PSP_4__footerULoginBtn"]').click()
-    time.sleep(2)
-    # //*[@id="TANGRAM__PSP_4__userName"]
-    browser.find_element_by_xpath('//*[@id="TANGRAM__PSP_4__userName"]').send_keys(account.accountbd)
-    # //*[@id="TANGRAM__PSP_4__password"]
-    browser.find_element_by_xpath('//*[@id="TANGRAM__PSP_4__password"]').send_keys(account.passwordbd)
-    # //*[@id="TANGRAM__PSP_4__submit"]
-    browser.find_element_by_xpath('//*[@id="TANGRAM__PSP_4__submit"]').click()
-    time.sleep(6)
-    
-def knowButtonClick(browser):
-    path_list = ['//p[@class="tip-button"]', '//div[@class="know-button"]']
-    for path in path_list:
-        try:
-            browser.find_element_by_xpath(path).click()
-            time.sleep(1)
-        except:
-            pass
-    
     
 def overDownloadNum(browser):
     time.sleep(4)
@@ -69,13 +48,11 @@ def dowithDownload(status, moive, downloadDmSuccess, downloadDmFail):
 
 def startBrower():
     browser = webdriver.Firefox()
-    browser.get('https://pan.baidu.com')
-    time.sleep(4)
-    login(browser)
-    time.sleep(4)
+    mypan = bdpan.BaiduPan(browser)
+    mypan.login()
     #input('login youself!')
     browser.get('https://pan.baidu.com/disk/home?#/all?vmode=list&path=%2Fmoive')
-    knowButtonClick(browser)
+    mypan.knowButtonClick()
     # 离线下载
     browser.find_element_by_xpath('//a[@data-button-id="b35"]').click()
     return browser
@@ -138,7 +115,6 @@ def downloadbd(request):
     # //*[@id="OfflineListView"]/dd[1]/div[3]/span[2] == '下载中' or '下载成功'
     # //*[@id="OfflineListView"]/dd[2]/div[3]/span[2] 
     '''
-
 
 def downloadLocal(link):
     browser = startBrower()
