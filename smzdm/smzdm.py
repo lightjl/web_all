@@ -48,7 +48,8 @@ def checkWeb(browser, url):
             sendHotmail.start() # 邮件通知
 
 def checkAll():
-    urls = zdmWeb.objects.all()
+    urls = zdmWeb.objects.filter(gxFlag = True)
+    logging.critical(urls)
     browser = webdriver.Firefox()
     for url in urls:
          checkWeb(browser, url.url)

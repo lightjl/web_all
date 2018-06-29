@@ -7,8 +7,8 @@ from smzdm.models import zdmWeb, zdmSp
 # Register your models here.
 
 class zdmWebAdmin(admin.ModelAdmin):
-    list_display = ('name', 'url')
-    fields = ('name', 'url')
+    list_display = ('name', 'url', 'gxFlag')
+    fields = ('name', 'url', 'gxFlag')
 
 class zdmSpAdmin(admin.ModelAdmin):
     list_display = ('hwmc','je', 'by', 'mj', 'url', 'zqrq', 'gxsj')

@@ -9,3 +9,4 @@ __pycache__/
 /.settings/
 /.idea/
 saveTmpFile/
+/db (副本).sqlite3
