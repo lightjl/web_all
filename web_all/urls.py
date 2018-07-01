@@ -36,6 +36,7 @@ urlpatterns = [
     path('xjgl/', include('xjgl.urls')),
     path('mmm/', include('smzdm.urls')),
     path('mebook/', book.views.CheckMeBook),
+    path('mebook/zzbook/', book.views.zzbook),
     path('', moivesDownload.views.show),
     path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

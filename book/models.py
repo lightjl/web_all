@@ -5,6 +5,8 @@ from django.db import models
 class Book(models.Model):
     bookname = models.CharField(max_length=30)
     zz = models.CharField(max_length=30)
+    zzFlag = models.BooleanField()
+    zzDate = models.DateField()
     tags = models.CharField(max_length=30)
     gxsj = models.CharField(max_length=14)
     rating = models.FloatField()
