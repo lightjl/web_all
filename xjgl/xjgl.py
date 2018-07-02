@@ -37,7 +37,7 @@ def watch(id):
     rowHigh = float(row['cell']['price'])
     if rowHigh > nhg.highest:    #新高超过前基准
         sub = '逆回购: ' + row['id'] + ' 破 ' + str(nhg.highest) + ', 现价: ' + row['cell']['price']
-        nhg.highest = max(nhg.highTodayInit * 1.3, rowHigh)
+        nhg.highest = max(nhg.highest * 1.3, rowHigh)
         logging.critical(sub)
         sendMail.sendMail(sub, "", changeReceiver=True)
         nhg.save()
