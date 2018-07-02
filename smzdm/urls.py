@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.urls import path
 from . import smzdm
+from . import views
 
 urlpatterns = [
     path('mmm/', smzdm.smzdm),
+    path('game/', views.checkGames),
 ]
