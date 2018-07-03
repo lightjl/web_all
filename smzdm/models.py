@@ -24,6 +24,7 @@ class mmmGame(models.Model):
     name = models.CharField(max_length=100, null=True, blank=True)
     url = models.CharField(max_length=600)
     tbUrl = models.CharField(max_length=400)
+    ce = models.FloatField(null=True, blank=True)
     lowerPrice = models.FloatField(null=True, blank=True)
     lowerDate = models.CharField(max_length=10, null=True, blank=True)
     currentPrice = models.FloatField(null=True, blank=True)

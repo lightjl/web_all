@@ -11,31 +11,38 @@ import datetime
 class Game:
     def __init__(self, id):
         self.game = mmmGame.objects.filter(id = id)
-        self.game_price()
-        self.notice()
-        self.game.update(name = self.name, lowerPrice = self.lowerPrice, lowerDate = self.lowerDate
-                         , currentPrice = self.currentPrice)
+        if(self.game_price()):
+            self.notice()
+            print(self.name)
+            print(self.currentPrice - self.lowerPrice)
+            self.game.update(name = self.name, ce = self.currentPrice - self.lowerPrice
+                             , lowerPrice = self.lowerPrice, lowerDate = self.lowerDate
+                             , currentPrice = self.currentPrice)
         # lowerPrice = self.lowerPrice,
         
 
     def game_price(self):
-        html = requests.get(self.game[0].url)
-        priceJson = json.loads(html.text)
-        self.lowerPrice = priceJson['lowerPrice']
-        if (len(priceJson['spName']) > 4):
-            self.name = priceJson['spName']
-        else:
-            self.name = self.game[0].name
-        self.currentPrice = priceJson['currentPrice']
-        date = (re.search('\(.*\)', priceJson['lowerDate']))
-        if date:
-            dateStr = (date.group())[:-1].split('+')[0][1:]
-            print(dateStr)
-            self.lowerDate = time.strftime('%F', time.localtime(float(dateStr)/1000))
+        try:
+            html = requests.get(self.game[0].url)
+            priceJson = json.loads(html.text)
+            self.lowerPrice = priceJson['lowerPrice']
+            if (len(priceJson['spName']) > 4):
+                self.name = priceJson['spName']
+            else:
+                return False
+            self.currentPrice = priceJson['currentPrice']
+            date = (re.search('\(.*\)', priceJson['lowerDate']))
+            if date:
+                dateStr = (date.group())[:-1].split('+')[0][1:]
+                print(dateStr)
+                self.lowerDate = time.strftime('%F', time.localtime(float(dateStr)/1000))
+            return True
+        except:
+            return False
             
     def notice(self):
-        if (self.game[0].currentPrice != self.currentPrice):
-            self.game.update(currentDate = datetime.date.today())
+        
+        self.game.update(currentDate = datetime.date.today())
         if (self.lowerPrice == self.currentPrice) \
             and (type(self.game[0].currentPrice) == type(None) or (self.game[0].currentPrice > self.currentPrice)):
             sendHotmail = threading.Thread(target=sendMail.sendMail, args=('buy: ' + self.name + ' ' + str(self.currentPrice), \
