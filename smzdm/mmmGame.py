@@ -13,11 +13,10 @@ class Game:
         self.game = mmmGame.objects.filter(id = id)
         if(self.game_price()):
             self.notice()
-            print(self.name)
-            print(self.currentPrice - self.lowerPrice)
-            self.game.update(name = self.name, ce = self.currentPrice - self.lowerPrice
+            self.game.update(ce = self.currentPrice - self.lowerPrice
                              , lowerPrice = self.lowerPrice, lowerDate = self.lowerDate
                              , currentPrice = self.currentPrice)
+
         # lowerPrice = self.lowerPrice,
         
 
@@ -26,15 +25,17 @@ class Game:
             html = requests.get(self.game[0].url)
             priceJson = json.loads(html.text)
             self.lowerPrice = priceJson['lowerPrice']
+            print(priceJson['spName'])
             if (len(priceJson['spName']) > 4):
                 self.name = priceJson['spName']
-            else:
-                return False
+            # else:
+            #    return False
             self.currentPrice = priceJson['currentPrice']
+            # print(self.currentPrice)
             date = (re.search('\(.*\)', priceJson['lowerDate']))
             if date:
                 dateStr = (date.group())[:-1].split('+')[0][1:]
-                print(dateStr)
+                # print(dateStr)
                 self.lowerDate = time.strftime('%F', time.localtime(float(dateStr)/1000))
             return True
         except:
@@ -45,11 +46,11 @@ class Game:
         self.game.update(currentDate = datetime.date.today())
         if (self.lowerPrice == self.currentPrice) \
             and (type(self.game[0].currentPrice) == type(None) or (self.game[0].currentPrice > self.currentPrice)):
-            sendHotmail = threading.Thread(target=sendMail.sendMail, args=('buy: ' + self.name + ' ' + str(self.currentPrice), \
+            sendHotmail = threading.Thread(target=sendMail.sendMail, args=('buy: ' + self.game[0].name + ' ' + str(self.currentPrice), \
                 'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
             sendHotmail.start()
         if (self.currentPrice >= self.game[0].buyPrice + self.game[0].yj + self.game[0].cb):
-            sendHotmail = threading.Thread(target=sendMail.sendMail, args=('sell: ' + self.name + ' ' + str(self.currentPrice), \
+            sendHotmail = threading.Thread(target=sendMail.sendMail, args=('sell: ' + self.game[0].name + ' ' + str(self.currentPrice), \
                 'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
             sendHotmail.start()
             
