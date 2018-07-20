@@ -16,7 +16,7 @@ def showbook(request):  # show
                                })
     
 def zzbook(request):  # zz book    
-    books = Book.objects.filter(zzFlag = False, rating__gte = 8)
+    books = Book.objects.filter(zzFlag = False, rating__gte = 8, id__gte = 6335)
     boosFromDB = mebook.BooksFromDB(books)
     boosFromDB.zzBook()
     return HttpResponse('zz book done')

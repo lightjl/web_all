@@ -11,13 +11,29 @@ class BookDownloadInfo:
     def __init__(self, mebooklink):
         html = requests.get(mebooklink)
         selector = etree.HTML(html.text)
-        downloadlink = selector.xpath('//*[@id="content"]/div/p[6]/strong/a/@href')[0]
+        download_selector = selector.xpath('//*[@id="content"]/div/p[6]/strong/a/@href')
+        self.bddownload = ''
+        if (len(download_selector) > 0):
+            downloadlink = download_selector[0]
+        else:
+            download_selector = selector.xpath('//a[1]')
+            for s in download_selector:
+                if (len(s.xpath('./text()')) > 0) and ('百度' in s.xpath('./text()')[0]):
+                    # //*[@id="content"]/p[11]/span/a[1]
+                    self.bddownload = (s.xpath('./@href')[0])
+                    bdmmstr = (s.xpath('../text()[2]')[0])
+                    bdmm = (re.search('：[ a-z0-9]*', bdmmstr))
+                    if bdmm:
+                        self.mm = ((bdmm.group()).split('：')[1])
+                    return
+
+            return
         
         htmlMebook = requests.get(downloadlink)
         selector = etree.HTML(htmlMebook.text)
         
         bdmmstr = (selector.xpath('/html/body/div[3]/p[6]/text()')[0])
-        bdmm = (re.search('百度网盘密码：[a-z0-9]*', bdmmstr))
+        bdmm = (re.search('百度网盘密码：[ a-z0-9]*', bdmmstr))
         if bdmm:
             self.mm = ((bdmm.group()).split('：')[1])
             pans = selector.xpath('/html/body/div[5]/a')
@@ -51,20 +67,32 @@ class BookInDB:
         self.downloadInfo = BookDownloadInfo(self.book[0].cclink)
     def zzSuccess(self):
         self.book.update(zzFlag = True, zzDate = datetime.date.today())
+    def zzFail(self):
+        self.book.update(zzFlag = True, bz = '百度盘无（和谐）' + self.book[0].bz)
 
 class BooksFromDB: 
     def __init__(self, books):
         # boos is like Book.objects.filter(...) or all
         self.books = books
+        self.loginFlag = False
+    
+    def login(self, browser):
+        if not self.loginFlag:
+            self.mypan = bdpan.BaiduPan(browser)
+            self.mypan.login()
+            self.loginFlag = True
         
     def zzBook(self):
         browser = webdriver.Firefox()
-        mypan = bdpan.BaiduPan(browser)
-        mypan.login()
+        
         for book in self.books:
             bookInDB = BookInDB(book.id)
-            mypan.zz(bookInDB.downloadInfo.bddownload, bookInDB.downloadInfo.mm)
-            bookInDB.zzSuccess()
+            if (len(bookInDB.downloadInfo.bddownload) > 0):
+                self.login(browser)
+                if(self.mypan.zz(bookInDB.downloadInfo.bddownload, bookInDB.downloadInfo.mm)):
+                    bookInDB.zzSuccess()
+                else:
+                    bookInDB.zzFail()
             
 
 def mebook(startPage, endPage):
