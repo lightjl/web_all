@@ -25,12 +25,12 @@ class Game:
             html = requests.get(self.game[0].url)
             priceJson = json.loads(html.text)
             self.lowerPrice = priceJson['lowerPrice']
-            print(priceJson['spName'])
+            # print(priceJson['spName'])
+            self.currentPrice = priceJson['currentPrice']
             if (len(priceJson['spName']) > 4):
                 self.name = priceJson['spName']
-            # else:
-            #    return False
-            self.currentPrice = priceJson['currentPrice']
+            elif self.currentPrice == 0:
+               return False
             # print(self.currentPrice)
             date = (re.search('\(.*\)', priceJson['lowerDate']))
             if date:
