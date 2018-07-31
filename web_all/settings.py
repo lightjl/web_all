@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'followXS',
     'xjgl',
     'smzdm',
+    'game',
     'book',
 ]
 

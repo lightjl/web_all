@@ -26,6 +26,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 import moivesDownload.views
 from django.contrib.auth import views as auth_views
+import game.views
 
 
 urlpatterns = [
@@ -37,6 +38,7 @@ urlpatterns = [
     path('mmm/', include('smzdm.urls')),
     path('mebook/', book.views.CheckMeBook),
     path('mebook/zzbook/', book.views.zzbook),
+    path('game/', game.views.Check_game),
     path('', moivesDownload.views.show),
     path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
