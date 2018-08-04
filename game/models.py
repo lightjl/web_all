@@ -11,3 +11,18 @@ class game(models.Model):
     content_descriptors = models.CharField(max_length=200)
     review_date = models.DateField()
     series = models.IntegerField(default=0)
+    
+class BRPG(models.Model):
+    name = models.CharField(max_length=19)
+    name_eng = models.CharField(max_length=46)
+    href_game = models.CharField(max_length=64)
+    peoples = models.CharField(max_length=9)
+    mins = models.CharField(max_length=9)
+    hard = models.CharField(max_length=9)
+    hard_level = models.FloatField()
+    rating = models.FloatField()
+    tb =models.BooleanField()
+    age = models.IntegerField()
+    publish_year = models.IntegerField()
+    language = models.CharField(max_length=19)
+    tag = models.CharField(max_length=100)

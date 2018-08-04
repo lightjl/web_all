@@ -39,6 +39,7 @@ urlpatterns = [
     path('mebook/', book.views.CheckMeBook),
     path('mebook/zzbook/', book.views.zzbook),
     path('game/', game.views.Check_game),
+    path('brpg/', game.views.Check_BRPG),
     path('', moivesDownload.views.show),
     path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
