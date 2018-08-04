@@ -28,7 +28,7 @@ class mmmGame(models.Model):
     lowerPrice = models.FloatField(null=True, blank=True)
     lowerDate = models.CharField(max_length=10, null=True, blank=True)
     currentPrice = models.FloatField(null=True, blank=True)
-    currentDate = models.DateField(auto_now=True)
+    currentDate = models.DateField(auto_now=False)
     gzFlag = models.BooleanField()
     buyPrice = models.FloatField()
     yj = models.FloatField()

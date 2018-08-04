@@ -15,7 +15,7 @@ class zdmSpAdmin(admin.ModelAdmin):
     
 class mmmGameAdmin(admin.ModelAdmin):
     list_display = ('name', 'gzFlag', 'ce', 'lowerPrice', 'lowerDate', 'buyPrice', 'currentDate')
-    fields = ('gzFlag', 'url', 'tbUrl', 'buyPrice', 'yj', 'cb')
+    fields = ('gzFlag', 'name', 'url', 'tbUrl', 'buyPrice', 'yj', 'cb', 'currentDate')
     
 admin.site.register(zdmWeb, zdmWebAdmin)
 admin.site.register(zdmSp, zdmSpAdmin)
