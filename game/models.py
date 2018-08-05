@@ -26,3 +26,5 @@ class BRPG(models.Model):
     publish_year = models.IntegerField()
     language = models.CharField(max_length=19)
     tag = models.CharField(max_length=100)
+    url_tb = models.CharField(max_length=100)
+    price = models.FloatField()

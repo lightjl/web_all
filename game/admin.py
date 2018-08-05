@@ -8,6 +8,6 @@ class GameAdmin(admin.ModelAdmin):
 admin.site.register(game, GameAdmin)
 
 class BRPGAdmin(admin.ModelAdmin):
-    list_display = ('name', 'peoples', 'mins', 'hard', 'rating', 'age', 'publish_year', 'language', 'tag')
+    list_display = ('name', 'peoples', 'mins', 'hard', 'rating', 'age', 'publish_year', 'language', 'tag', 'price', 'url_tb')
     
 admin.site.register(BRPG, BRPGAdmin)

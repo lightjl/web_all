@@ -11,6 +11,6 @@ def Check_game(request):
 
 
 def Check_BRPG(request):
-    for page in range(1, 3):
+    for page in range(1, 5):
         p_BRPG.check_page(page)
     return HttpResponse('check BRPG done')
