@@ -7,6 +7,8 @@ import datetime
 from django.db.models import Min
 from lxml import etree
 import requests
+from common.sendMail import sendMail
+import threading
 
 class qieman_login:
     def __init__(self):
@@ -145,8 +147,15 @@ class fund_qieman_me:
         
 class longwin_detail:
     def __init__(self):
-        self.check()
-        pass
+        today = datetime.date.today()
+        today_11 = datetime.datetime(today.year, today.month, today.day, 11)
+        while True:
+            min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
+            if min_gxsj < today_11:
+                self.check()
+            else:
+                break
+        
     def check(self):
         browser = webdriver.Firefox()
         url = 'https://qieman.com/longwin/detail'
@@ -178,11 +187,18 @@ class longwin_detail:
         
 class longwin_detail_my:
     def __init__(self):
-        self.me = qieman_login()
-        url = 'https://qieman.com/longwin/asset'
-        self.me.browser.get(url)
-        self.my_fund = qieman_login()
-        pass
+        today = datetime.date.today()
+        today_12 = datetime.datetime(today.year, today.month, today.day, 12)
+        min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
+        if min_gxsj < today_12:
+            self.me = qieman_login()
+            url = 'https://qieman.com/longwin/asset'
+            self.me.browser.get(url)
+            self.my_fund = qieman_login()
+            while min_gxsj < today_12:
+                self.check()
+                min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
+            self.quit()
     
     def check(self):
         self.trs = self.me.browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr')
@@ -208,6 +224,7 @@ class Fund_deal:
         self.fs = Fund.objects.all()
         today = datetime.date.today()
         self.today_14 = datetime.datetime(today.year, today.month, today.day, 14)
+        self.today_15 = datetime.datetime(today.year, today.month, today.day, 15)
         
     def deal(self):
         if(datetime.datetime.now() < self.today_14):
@@ -228,13 +245,16 @@ class Fund_deal:
             f.save()
             
     def buy(self):
+        min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
+        if min_gxsj == self.today_15:
+            return
         while True:
             min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
             if min_gxsj < self.today_14:
                 self.deal()
             else:
                 break
-    
+        texts = ''
         for f in self.fs:
             gz = f.jz * (1 + f.gszzl/100)
             if (f.price_min == 99):
@@ -254,7 +274,12 @@ class Fund_deal:
                 buy = 1.1 * f.fs - fs_my
             elif f.price_min >= gz:
                 buy = f.fs - fs_my
+            f.gxsj = self.today_15
+            f.save()
+            
             if buy != 0:
-                print('%s %s buy=%.2f price_min=%.2f gz=%.2f fs=%.2f, fs_my=%.2f' % (f.code, f.name, buy, f.price_min, gz, f.fs, fs_my))
+                texts += ('%s %s buy=%.2f份 price_min=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' % (f.code, f.name, buy, f.price_min, gz, f.fs, fs_my))
         
-    
+        print(texts)
+        if (len(texts) > 0):
+            sendMail.sendMail('qmjj: buy', texts, changeReceiver=True)
