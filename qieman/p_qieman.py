@@ -245,6 +245,8 @@ class Fund_deal:
             f.save()
             
     def buy(self):
+        if datetime.datetime.now() < self.today_14:
+            reutrn
         min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
         if min_gxsj == self.today_15:
             return
