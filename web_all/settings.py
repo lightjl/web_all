@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'control',
     'followXS',
     'xjgl',
+    'qieman',
     'smzdm',
     'game',
     'book',
@@ -123,7 +124,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
