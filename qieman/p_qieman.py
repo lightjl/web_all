@@ -191,7 +191,7 @@ class longwin_detail:
                 tmp.mx()
                 print(tmp.code, tmp.name, tmp.yk, tmp.price_min, tmp.price_hold, tmp.jz)
                 f = Fund(code=tmp.code, name=tmp.name, fs=tmp.copies, yk=tmp.yk, price_min=tmp.price_min, price_hold=tmp.price_hold, jz=tmp.jz\
-                         ,gxsj=today_11)
+                         ,gxsj=today_11, notice_today=False)
                 f.save()
             print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk, tmp.jz)
         browser.quit()
@@ -241,11 +241,29 @@ class Fund_deal:
         self.today_14 = datetime.datetime(today.year, today.month, today.day, 14)
         self.today_15 = datetime.datetime(today.year, today.month, today.day, 15)
         
+    def deal_a_fund(self, fund):
+        if fund.gxsj >= self.today_15:
+            return
+        url = 'http://fund.eastmoney.com/%s.html?spm=search' % fund.code
+        # print(url)
+        html = requests.get(url)
+        time.sleep(4)
+        html.encoding = 'utf-8'
+        selector = etree.HTML(html.text)
+        try:
+            gszzl = float(selector.xpath('//*[@id="gz_gszzl"]/text()')[0][:-1])
+        except:
+            gszzl = 0
+        fund.gxsj = datetime.datetime.now()
+        gszzl_before = fund.gszzl
+        fund.gszzl = gszzl
+        fund.save()
+        return (gszzl_before < gszzl)
+            
     def deal(self):
-        print(self.today_14)
         for f in self.fs:
             # print(self.today_14)
-            if f.gxsj >= self.today_14:
+            if f.gxsj >= self.today_15:
                 continue
             url = 'http://fund.eastmoney.com/%s.html?spm=search' % f.code
             # print(url)
@@ -265,16 +283,12 @@ class Fund_deal:
         if datetime.datetime.now() < self.today_14:
             return
         min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
-        if min_gxsj == self.today_15:
+        if min_gxsj >= self.today_15:
             return
-        while True:
-            min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
-            if min_gxsj < self.today_14:
-                self.deal()
-            else:
-                break
+        
         texts = ''
         for f in self.fs:
+            flag_down = self.deal_a_fund(f)
             gz = f.jz * (1 + f.gszzl/100)
             if (f.price_min == 99):
                 continue
@@ -293,12 +307,13 @@ class Fund_deal:
                 buy = 1.1 * f.fs - fs_my
             elif f.price_min >= gz:
                 buy = f.fs - fs_my
-            f.gxsj = self.today_15
-            f.save()
+            f.gxsj = datetime.datetime.now()
             
-            if buy != 0:
+            if (buy != 0) and ((not f.notice_today) or (f.notice_today and flag_down)):
                 texts += ('%s %s buy=%.2f份 price_min=%.2f 估算增长率=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' \
                           % (f.code, f.name, buy, f.price_min, f.gszzl, gz, f.fs, fs_my))
+                f.notice_today=True
+            f.save()
         
         print(texts)
         if (len(texts) > 0):

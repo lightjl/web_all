@@ -18,3 +18,5 @@ class Fund(models.Model):
     gszzl = models.FloatField(null=True, blank=True) # 估算增长率
     
     gxsj = models.DateTimeField('最后修改日期', null=True, blank=True)
+    
+    notice_today = models.BooleanField()
