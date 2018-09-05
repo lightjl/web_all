@@ -58,6 +58,12 @@ class fund_qieman:
     
     def yk(self):
         self.yk = self.tr.find_element_by_xpath('../../td[2]/div[2]/span').text
+        try:
+            yk = float(self.yk)
+        except:
+            yk = 0
+        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr[1]/td[2]/div[3]/span[2]/text()
+        self.yk = str(yk)
         return self.yk
         
     def mx(self):
@@ -112,7 +118,12 @@ class fund_qieman_me:
     
     def yk(self):
         self.yk = self.tr.find_element_by_xpath('./td[2]/div[3]/span[2]').text
+        try:
+            yk = float(self.yk)
+        except:
+            yk = 0
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr[1]/td[2]/div[3]/span[2]/text()
+        self.yk = str(yk)
         return self.yk
         
     def mx(self):
@@ -178,6 +189,7 @@ class longwin_detail:
                               ,gxsj=today_11)
             else:
                 tmp.mx()
+                print(tmp.code, tmp.name, tmp.yk, tmp.price_min, tmp.price_hold, tmp.jz)
                 f = Fund(code=tmp.code, name=tmp.name, fs=tmp.copies, yk=tmp.yk, price_min=tmp.price_min, price_hold=tmp.price_hold, jz=tmp.jz\
                          ,gxsj=today_11)
                 f.save()
@@ -196,7 +208,8 @@ class longwin_detail_my:
             self.me.browser.get(url)
             self.my_fund = qieman_login()
             while min_gxsj < today_12:
-                self.check()
+                if(self.check()):
+                    break
                 min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
             self.quit()
     
@@ -205,15 +218,17 @@ class longwin_detail_my:
     
         today = datetime.date.today()
         today_12 = datetime.datetime(today.year, today.month, today.day, 12)
-        
+        success = True
         for tr in self.trs:
             tmp = fund_qieman_me(tr, self.my_fund.browser)
             fs = Fund.objects.filter(code=tmp.code, name=tmp.name)
             if(fs[0].gxsj >= today_12):
                 continue
+            success = False
             tmp.mx()
             fs.update(fs_my=tmp.copies, yk_my=tmp.yk, price_min_my=tmp.price_min, price_hold_my=tmp.price_hold, gxsj=today_12)
             print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk)
+        return success
             
     def quit(self):
         self.me.browser.quit()
@@ -227,26 +242,28 @@ class Fund_deal:
         self.today_15 = datetime.datetime(today.year, today.month, today.day, 15)
         
     def deal(self):
-        if(datetime.datetime.now() < self.today_14):
-            return
+        print(self.today_14)
         for f in self.fs:
+            # print(self.today_14)
             if f.gxsj >= self.today_14:
                 continue
             url = 'http://fund.eastmoney.com/%s.html?spm=search' % f.code
+            # print(url)
             html = requests.get(url)
+            time.sleep(4)
             html.encoding = 'utf-8'
             selector = etree.HTML(html.text)
             try:
                 gszzl = float(selector.xpath('//*[@id="gz_gszzl"]/text()')[0][:-1])
             except:
                 gszzl = 0
-            f.gxsj = self.today_14
+            f.gxsj = datetime.datetime.now()
             f.gszzl = gszzl
             f.save()
             
     def buy(self):
         if datetime.datetime.now() < self.today_14:
-            reutrn
+            return
         min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
         if min_gxsj == self.today_15:
             return
@@ -280,7 +297,8 @@ class Fund_deal:
             f.save()
             
             if buy != 0:
-                texts += ('%s %s buy=%.2f份 price_min=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' % (f.code, f.name, buy, f.price_min, gz, f.fs, fs_my))
+                texts += ('%s %s buy=%.2f份 price_min=%.2f 估算增长率=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' \
+                          % (f.code, f.name, buy, f.price_min, f.gszzl, gz, f.fs, fs_my))
         
         print(texts)
         if (len(texts) > 0):

@@ -7,7 +7,7 @@ def check(request):
     e_big = p_qieman.longwin_detail()
     me = p_qieman.longwin_detail_my()
     d = p_qieman.Fund_deal()
-
+    d.deal()
     d.buy()
     
     return HttpResponse('follow qieman done')
