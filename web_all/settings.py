@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'smzdm',
     'game',
     'book',
+    'email_os',
 ]
 
 MIDDLEWARE = [
