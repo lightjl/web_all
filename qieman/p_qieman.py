@@ -186,7 +186,7 @@ class longwin_detail:
                 else:
                     tmp.mx()
                     fs.update(code=tmp.code, name=tmp.name, fs=tmp.copies, yk=tmp.yk, price_min=tmp.price_min, price_hold=tmp.price_hold, jz=tmp.jz\
-                              ,gxsj=today_11)
+                              ,gxsj=today_11, notice_today=False)
             else:
                 tmp.mx()
                 print(tmp.code, tmp.name, tmp.yk, tmp.price_min, tmp.price_hold, tmp.jz)
@@ -226,7 +226,9 @@ class longwin_detail_my:
                 continue
             success = False
             tmp.mx()
-            fs.update(fs_my=tmp.copies, yk_my=tmp.yk, price_min_my=tmp.price_min, price_hold_my=tmp.price_hold, gxsj=today_12)
+            fs.update(fs_my=tmp.copies, yk_my=tmp.yk\
+                      , price_min_my=tmp.price_min, price_hold_my=tmp.price_hold, gxsj=today_12\
+                      , notice_today=False)
             print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk)
         return success
             
