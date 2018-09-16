@@ -37,10 +37,11 @@ def loginAndDownload(request):  # 登陆函数
     _cookies = (login_session.cookies)
     #print(login_session.status_code)
     #print(_cookies.get_dict())
-    url = 'http://www.zimuzu.tv/user/fav'
-    f = login_session.get(url)
+    url = 'http://www.zimuzu.io/user/fav'
+    f = login_session.get(url, headers=header)
     time.sleep(5)
     selector = etree.HTML(f.text)
+    # print(f.text)
     # print(selector)
     ## /html/body/div[4]/div/div/div[2]/div/ul/li[1] /div[2]/ul/li[1] /a[1]/span
     # /html/body/div[4]/div/div/div[2]/div/ul/li[1] /div[2]/ul/li[1] /div/div/div/a[2]
