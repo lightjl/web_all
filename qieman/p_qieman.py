@@ -70,6 +70,7 @@ class fund_qieman:
         # todo 处理买卖数据
         browser = self.browser
         browser.get(self.url)
+        time.sleep(4)
         trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/section[4]/table/tbody/tr')
         try:
             min_price = float(trs[0].find_element_by_xpath('./td[1]/div[2]/span').text)
@@ -220,16 +221,19 @@ class longwin_detail_my:
         today_12 = datetime.datetime(today.year, today.month, today.day, 12)
         success = True
         for tr in self.trs:
-            tmp = fund_qieman_me(tr, self.my_fund.browser)
-            fs = Fund.objects.filter(code=tmp.code, name=tmp.name)
-            if(fs[0].gxsj >= today_12):
+            try:
+                tmp = fund_qieman_me(tr, self.my_fund.browser)
+                fs = Fund.objects.filter(code=tmp.code, name=tmp.name)
+                if(fs[0].gxsj >= today_12):
+                    continue
+                success = False
+                tmp.mx()
+                fs.update(fs_my=tmp.copies, yk_my=tmp.yk\
+                          , price_min_my=tmp.price_min, price_hold_my=tmp.price_hold, gxsj=today_12\
+                          , notice_today=False)
+                print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk)
+            except:
                 continue
-            success = False
-            tmp.mx()
-            fs.update(fs_my=tmp.copies, yk_my=tmp.yk\
-                      , price_min_my=tmp.price_min, price_hold_my=tmp.price_hold, gxsj=today_12\
-                      , notice_today=False)
-            print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk)
         return success
             
     def quit(self):
