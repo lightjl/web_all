@@ -7,9 +7,11 @@ from smzdm.models import mmmGame
 import threading
 from common.sendMail import sendMail
 import datetime 
+from email_os import p_email_os
 
 class Game:
     def __init__(self, id):
+        self.email = p_email_os.Email_os()
         self.game = mmmGame.objects.filter(id = id)
         if(self.game_price()):
             self.notice()
@@ -46,11 +48,15 @@ class Game:
         self.game.update(currentDate = datetime.date.today())
         if (self.lowerPrice == self.currentPrice) \
             and (type(self.game[0].currentPrice) == type(None) or (self.game[0].currentPrice > self.currentPrice)):
-            sendHotmail = threading.Thread(target=sendMail.sendMail, args=('buy: ' + self.game[0].name + ' ' + str(self.currentPrice), \
-                'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
+            txt = 'buy: ' + self.game[0].name + ' ' + str(self.currentPrice) + '\n' + self.game[0].tbUrl
+            email.add_mail_item(subject='买游戏', topic='买游戏碟', txt=txt, minutes_delay=10, deadline=None, cover=False)
+#             sendHotmail = threading.Thread(target=sendMail.sendMail, args=('buy: ' + self.game[0].name + ' ' + str(self.currentPrice), \
+#                 'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
             sendHotmail.start()
         if (self.currentPrice >= self.game[0].buyPrice + self.game[0].yj + self.game[0].cb):
-            sendHotmail = threading.Thread(target=sendMail.sendMail, args=('sell: ' + self.game[0].name + ' ' + str(self.currentPrice), \
-                'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
-            sendHotmail.start()
+            txt = 'sell: ' + self.game[0].name + ' ' + str(self.currentPrice) + '\n' + self.game[0].tbUrl
+            email.add_mail_item(subject='卖游戏', topic='卖游戏碟', txt=txt, minutes_delay=10, deadline=None, cover=False)
+#             sendHotmail = threading.Thread(target=sendMail.sendMail, args=('sell: ' + self.game[0].name + ' ' + str(self.currentPrice), \
+#                 'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
+#             sendHotmail.start()
             

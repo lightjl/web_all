@@ -28,6 +28,7 @@ import moivesDownload.views
 from django.contrib.auth import views as auth_views
 import game.views
 import qieman.views
+import email_os.views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -43,5 +44,6 @@ urlpatterns = [
     path('game_itunes/', game.views.Check_game_itunes),
     path('', moivesDownload.views.show),
     path('qieman/', qieman.views.check),
+    path('checkmail/', email_os.views.check),
     path('accounts/login/', auth_views.LoginView.as_view()),
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -9,6 +9,7 @@ import logging
 from common.sendMail import imMail
 from followXS.models import Xs, Chapter
 from common.saveFile import saveTxt
+from email_os import p_email_os
 
 
 #timeB = [['19:46', '23:00']]
@@ -19,6 +20,7 @@ class XS:
         self.name = self.xs.rask.name
         self.__url = self.xs.url
         self.__getContent = saveTxt.saveToFile('xs')
+        self.email = p_email_os.Email_os()
 
     def getUrl(self):
         return self.__url
@@ -31,10 +33,11 @@ class XS:
                 'xs:'+filename+'\n'+url, 'ming188199@hotmail.com', 'hotmail', False))
         
         # sendMail.sendMail(filename, 'xs:'+filename, receiver='ming188199@hotmail.com', sendFrom='hotmail')
-        
+        self.email.add_mail_item(subject='小说', topic=filename, txt='xs:'+filename+'\n'+url, minutes_delay=30, deadline=None, cover=False)
         if '第' in filename:
             logging.debug("更新了"+filename)
             sendMail.send_attachment_kd(self.__getContent.getSavePath().joinpath(filename+'.txt'))
+            
         # sendHotmail.start()
 
         
@@ -86,7 +89,7 @@ class XS:
                 if len(text) > 89:     # 避免下载空文件
                     #ss = threading.Thread(target=self.sendShouqu, args=(zjHref,))
                     #ss.start()
-                    if (self.save(zjName, text, 5)):
+                    if (self.save(zjName, text, 5)): # 小说章节大于5KB才正常
                         self.sendToKindle(zjName, zjHref)
                         cp = Chapter(xs=self.xs, name=zjName)
                         cp.save()  # 送出后更新

@@ -9,6 +9,7 @@ from lxml import etree
 import requests
 from common.sendMail import sendMail
 import threading
+from email_os import p_email_os
 
 class qieman_login:
     def __init__(self):
@@ -71,7 +72,7 @@ class fund_qieman:
         browser = self.browser
         browser.get(self.url)
         time.sleep(4)
-        trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/section[4]/table/tbody/tr')
+        trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/section[4]/table/tbody/tr')
         try:
             min_price = float(trs[0].find_element_by_xpath('./td[1]/div[2]/span').text)
         except:
@@ -81,12 +82,12 @@ class fund_qieman:
             if (tmp <= min_price):
                 min_price = tmp
         try:
-            price_hold = float(browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/section[2]/div/div[2]/div/span[2]/span').text)
+            price_hold = float(browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/section[2]/div/div[2]/div/span[2]/span').text)
         except:
             price_hold = min_price
         if (min_price > price_hold):
             min_price = price_hold
-        self.jz = float(browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/section[2]/div/div[4]/div/span[2]/span').text)
+        self.jz = float(browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/section[2]/div/div[4]/div/span[2]/span').text)
         self.price_min = min_price
         self.price_hold = price_hold
         
@@ -161,6 +162,12 @@ class longwin_detail:
     def __init__(self):
         today = datetime.date.today()
         today_11 = datetime.datetime(today.year, today.month, today.day, 11)
+        min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
+        if min_gxsj >= today_11:
+            return
+        self.browser = webdriver.Firefox()
+        self.browser_fund = webdriver.Firefox()
+        
         while True:
             min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
             if min_gxsj < today_11:
@@ -169,13 +176,13 @@ class longwin_detail:
                 break
         
     def check(self):
-        browser = webdriver.Firefox()
+        browser = self.browser
         url = 'https://qieman.com/longwin/detail'
         browser.get(url)
-        trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/table[2]/tbody/tr[*]/td[1]/div[2]')
+        trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[*]/td[1]/div[2]')
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/table[2]/tbody/tr[2]/td[1]/div[1]
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/table[2]/tbody/tr[*]/td[1]/div[2]
-        browser_fund = webdriver.Firefox()
+        browser_fund = self.browser_fund
         today = datetime.date.today()
         today_11 = datetime.datetime(today.year, today.month, today.day, 11)
         for tr in trs:
@@ -195,8 +202,11 @@ class longwin_detail:
                          ,gxsj=today_11, notice_today=False)
                 f.save()
             print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk, tmp.jz)
-        browser.quit()
-        browser_fund.quit()
+        self.quit()
+    
+    def quit(self):
+        self.browser.quit()
+        self.browser_fund.quit()
         
 class longwin_detail_my:
     def __init__(self):
@@ -315,12 +325,16 @@ class Fund_deal:
                 buy = f.fs - fs_my
             f.gxsj = datetime.datetime.now()
             
-            if (buy != 0) and ((not f.notice_today) or (f.notice_today and flag_down)):
-                texts += ('%s %s buy=%.2f份 price_min=%.2f 估算增长率=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' \
-                          % (f.code, f.name, buy, f.price_min, f.gszzl, gz, f.fs, fs_my))
+            if (buy != 0):
+                texts += ('%s downflag=%i %s buy=%.2f份 price_min=%.2f 估算增长率=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' \
+                          % (f.code, flag_down, f.name, buy, f.price_min, f.gszzl, gz, f.fs, fs_my))
                 f.notice_today=True
             f.save()
         
         print(texts)
         if (len(texts) > 0):
             sendMail.sendMail('qmjj: buy', texts, changeReceiver=True)
+            email = p_email_os.Email_os()
+
+            today_15 = datetime.datetime(today.year, today.month, today.day, 14, 55)
+            email.add_mail_item(subject='基金', topic='且慢', txt=texts, minutes_delay=20, deadline=today_15, cover=True)

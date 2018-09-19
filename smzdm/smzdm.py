@@ -6,12 +6,14 @@ import re
 from django.http import HttpResponse
 from smzdm.models import zdmSp, zdmWeb
 from common.sendMail import sendMail
-
+from email_os import p_email_os
 
 def checkWeb(browser, url):
     browser.get(url)
     lis = browser.find_elements_by_xpath('//*[@id="feed-main-list"]/li')
     plus = False # 没京东plus会员
+    email = p_email_os.Email_os()
+    
     for li in lis:
         hwmc = (li.find_element_by_xpath('./div/div[2]/h5/a[1]').text)
         if (not plus) and ('PLUS' in hwmc):
@@ -40,12 +42,8 @@ def checkWeb(browser, url):
         sp = zdmSp(hwmc=hwmc, mj=mj, by=by, je=je, url=url, bz=yhStr, gxsj=gxsj)
         sp.save()
         if not ('-' in gxsj):
-            sendHotmail = threading.Thread(target=sendMail.sendMail,\
-                        args=(hwmc + ' ' + str(je), \
-                    'smzdm:' + hwmc + ' ' + str(je) + '\n' \
-                    + yhStr + '\n' \
-                    +url, 'ming188199@hotmail.com', 'hotmail', False))
-            sendHotmail.start() # 邮件通知
+            txt = 'smzdm:' + hwmc + ' ' + str(je) + '\n' + yhStr + '\n' + url  # 邮件通知
+            email.add_mail_item(subject='什么值得买', topic='什么值得买', txt=txt, minutes_delay=10, deadline=None, cover=False)
 
 def checkAll():
     urls = zdmWeb.objects.filter(gxFlag = True)
