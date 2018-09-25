@@ -25,12 +25,15 @@ class Email_item():
             self.ss.update(minutes_delay=self.mins, deadline=self.deadline,delay_until=delay_until)
     
     def update_topic(self):
-        ts = Topic.objects.filter(sub = self.ss[0])
+        
 #         print('ts:', len(ts))
         if (self.cover):    # 覆盖,直接删除之前topic
+            ts = Topic.objects.filter(sub = self.ss[0], name = self.top)
+            print('len_ts', len(ts))
             ts.delete()
             
         t = Topic(sub=self.ss[0], name=self.top, cover=self.cover, txt=self.txt)
+        print(self.top, self.cover, self.txt)
         t.save()
     
     def update2os(self):
@@ -47,3 +50,4 @@ class Email_os():
 #         print(subject, topic, txt, minutes_delay, deadline, cover)
         self.item = Email_item(subject, topic, txt, minutes_delay, deadline, cover)
         self.item.update2os()
+        print((subject, topic, txt, minutes_delay, deadline, cover))

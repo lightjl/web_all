@@ -279,7 +279,7 @@ class Fund_deal:
     def deal(self):
         for f in self.fs:
             # print(self.today_14)
-            if f.gxsj >= self.today_15:
+            if f.gxsj + datetime.timedelta(minutes=5) >= datetime.datetime.now() or f.gxsj >= self.today_15:
                 continue
             url = 'http://fund.eastmoney.com/%s.html?spm=search' % f.code
             # print(url)
@@ -298,13 +298,11 @@ class Fund_deal:
     def buy(self):
         if datetime.datetime.now() < self.today_14:
             return
-        min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
-        if min_gxsj >= self.today_15:
+        if datetime.datetime.now() >= self.today_15:
             return
-        
         texts = ''
         for f in self.fs:
-            flag_down = self.deal_a_fund(f)
+#             flag_down = self.deal_a_fund(f)
             gz = f.jz * (1 + f.gszzl/100)
             if (f.price_min == 99):
                 continue
@@ -323,18 +321,15 @@ class Fund_deal:
                 buy = 1.1 * f.fs - fs_my
             elif f.price_min >= gz:
                 buy = f.fs - fs_my
-            f.gxsj = datetime.datetime.now()
-            
             if (buy != 0):
-                texts += ('%s downflag=%i %s buy=%.2f份 price_min=%.2f 估算增长率=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n' \
-                          % (f.code, flag_down, f.name, buy, f.price_min, f.gszzl, gz, f.fs, fs_my))
-                f.notice_today=True
-            f.save()
+                t = ('%s %s buy=%.2f份 price_min=%.2f 估算增长率=%.2f gz=%.2f fs=%.2f, fs_my=%.2f\n\n' \
+                          % (f.code, f.name, buy, f.price_min, f.gszzl, gz, f.fs, fs_my))
+                print(t)
+                texts += t
         
-        print(texts)
         if (len(texts) > 0):
-            sendMail.sendMail('qmjj: buy', texts, changeReceiver=True)
             email = p_email_os.Email_os()
-
+            today = datetime.datetime.now()
             today_15 = datetime.datetime(today.year, today.month, today.day, 14, 55)
+            print('add!!!')
             email.add_mail_item(subject='基金', topic='且慢', txt=texts, minutes_delay=20, deadline=today_15, cover=True)

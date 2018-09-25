@@ -12,4 +12,4 @@ class Topic(models.Model):
     sub = models.ForeignKey(Subject, on_delete=models.CASCADE)
     name = models.CharField(max_length=30)
     cover = models.BooleanField()
-    txt = models.CharField(max_length=140)
+    txt = models.CharField(max_length=3000)
