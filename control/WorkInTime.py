@@ -5,6 +5,7 @@ import threading
 import logging
 import calendar
 from datetime import datetime,timedelta,date
+# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s -%(message)s')
 
 class WorkInTime():
     def __init__(self, timeBucket, relaxTime = 60, weekday = 'all'): 
@@ -20,17 +21,19 @@ class WorkInTime():
         self.__today = date.today()
         self.fromWitch = -2 # from where -2 first time
         self.fromRelaxFlag = True
+        self.time_period = [[datetime.now().strftime('%Y-%m-%d') + ' ' + i for i in timeB] \
+                            for timeB in self.__time[:] ]
         logging.debug("WorkInTime init")
     def changeRelaxTime(self, relaxTime):
         logging.debug("changeRelaxTime")
         self.__relaxTime = relaxTime
-    def __resetTime(self):
+    def __resetTime(self, id):
         logging.debug("__resetTime")
-        now = datetime.now()
-        self.__today = date.today()
-        self.__timeType = [[time.mktime(time.strptime(str(now.year) + '-' + str(now.month) + '-' + str(now.day) +\
-                            ' ' + i + ':00', '%Y-%m-%d %H:%M:%S')) for i in timeB] for timeB in self.__time[:]
-                         ]
+        r = Rask.objects.filter(id=id)
+        self.__time = eval('['+r[0].timePeriod+']')
+        
+        self.time_period = [[datetime.now().strftime('%Y-%m-%d') + ' ' + i for i in timeB] \
+                            for timeB in self.__time[:] ]
     def relaxDay(self, alive):
         #print(self.__today.weekday())
         if self.__weekday == 'All' or self.__weekday == 'all':
@@ -39,61 +42,43 @@ class WorkInTime():
             self.__today = date.today()
             time.sleep(self.sleep_time)
     # timeTrade = [['9:29', '11:30'], ['13:00', '15:00']]
-    def relax(self, alive, name=''):
-        self.relaxDay(alive)  #relaxDay
-        timeBucket = self.__timeType
-        while alive.value:
-            timeNow = time.time()
-            #logging.debug(name)
-            working = False
-            if (timeNow > timeBucket[-1][1]):      # 
-                self.fromRelaxFlag = True
-                if (self.fromWitch != -1):  # miss last one 
-                    self.fromWitch = -1
-                    break
-                logging.debug(name + ' bigger than last one time relax')
-                time.sleep(self.sleep_time)
-                logging.debug(name + ' bigger than last one time out')
-                self.__resetTime()
-                timeBucket = self.__timeType
-            elif timeNow < timeBucket[0][0]:      #
-                logging.debug(name + ' smaller than first time relax')
-                time.sleep(self.sleep_time)
-                logging.debug(name + ' smaller than first time out')
-                self.fromWitch = 0  #before first one
-                self.fromRelaxFlag = True
-            else:
-                for i in range(len(timeBucket)-1)[::-1]:
-                    if (timeNow > timeBucket[i][1] and timeNow < timeBucket[i+1][0]):
-                        if(self.fromWitch != i+1):  # last work time
-                            self.fromWitch = i+1
-                            working = True
-                            break
-                        logging.debug(name + ' mid time relax')
-                        time.sleep(self.sleep_time)
-                        logging.debug(name + ' mid time out')
-                        self.fromRelaxFlag = True
-                    elif (timeNow <= timeBucket[i][1] and timeNow >= timeBucket[i][0]):
-                        working = True
-                        self.fromWitch = i+1  #nth working
-                        break
-                if(timeNow >= timeBucket[-1][0] and timeNow <= timeBucket[-1][1]):
-                    # last work
-                    self.fromWitch = -1
-                    working = True
-            if(working):
-                break
+    
+    def relax_during_working_time(self, alive):
         relaxTime = self.__relaxTime
         while alive.value:
-            if self.fromRelaxFlag:   #
-                self.fromRelaxFlag = False
-                break
-            logging.debug(name + ' work relaxtime: ' + str(relaxTime))
+            logging.debug('work relaxtime: ' + str(self.sleep_time))
             time.sleep(self.sleep_time)
             relaxTime -= self.sleep_time
             if(relaxTime <= 0):
                 break
-        logging.debug(name + ' working')
+    
+    def relax(self, id, alive, name=''):
+        self.relaxDay(alive)  #relaxDay
+        self.__resetTime(id)
+        while alive.value:
+            timeNow = datetime.now().strftime('%Y-%m-%d %H:%M')
+            working = False
+            for t in self.time_period:
+                logging.debug(timeNow)
+                logging.debug(name + t[0] + ' ' + t[1])
+                # 正常运行
+                r = Rask.objects.filter(id=id)
+                if t[0] <= timeNow <= t[1]: # 工作时间
+                    logging.debug(name + ' relax to work')
+                    if r[0].run_time_last.strftime('%Y-%m-%d %H:%M') >= t[0]:# 非第一次运行
+                        self.relax_during_working_time(alive) # 中场休息
+                    logging.debug(name + ' working')
+                    working = True
+                    break
+                if timeNow > t[0]:
+                    if r[0].run_success_time_last.strftime('%Y-%m-%d %H:%M') >= t[0]: #已在该时间段后运行
+                        pass
+                    else:   # 补运行
+                        working = True
+                        break
+            if working:
+                break
+            time.sleep(self.sleep_time)
 
 
 '''
