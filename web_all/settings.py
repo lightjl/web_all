@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'smzdm',
     'game',
     'book',
+    'douban',
     'email_os',
 ]
 
