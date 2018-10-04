@@ -4,9 +4,12 @@ import os
 from moivesDownload.moiveE import NameEng
 from moivesDownload.models import Moive, People, Watch, Statue_dm
 from django.http import HttpResponse
+from pathlib import Path
 
 def changeWatchDm(request):
-    listMoive = (os.listdir(os.path.expanduser('~/Videos')))
+    if not Path('/media/l/TOSHIBA EXT').exists():
+        return 
+    listMoive = (os.listdir(os.path.expanduser('/media/l/TOSHIBA EXT')))
     
     listEngNameMoive = []
     for name in listMoive:
