@@ -14,6 +14,7 @@ class DoubanBook:
         self.useProxy = False
         self.name = name
         self.author = author
+        self.book_id = 0
         #self.checkUrl = 'http://www.cbip.cn/Query.aspx?search_str0=' + urllib.request.quote(name)
         self.checkUrl = 'https://api.douban.com/v2/book/search?q=' + name
         if author is not None:
@@ -25,6 +26,7 @@ class DoubanBook:
             self.proxyDict = { 
                   "http"  : self.http_proxy, 
                 }
+        self.getBookInfo()
         #print(self.ppool_instance.get_one_proxy())
         #self.checkUrl = 'http://www.cbip.cn/Query.aspx?search_str0=green'
         # print(self.checkUrl)
@@ -38,6 +40,7 @@ class DoubanBook:
                 bs = Book.objects.filter(name = self.name, zz = self.author)
             if (len(bs)>0): # todo 半年更新
                 the_book = bs[0]
+                self.book_id = the_book.id
                 return [the_book.name, the_book.zz, the_book.tags, the_book.rating, the_book.link, the_book.zz]
         
         try:
@@ -85,6 +88,7 @@ class DoubanBook:
                       ,bz = self.summary
                       )
             bs.save()
+            self.book_id = Book.objects.filter(name = self.name, zz = self.author)[0].id
         return [self.name, self.author, self.tags, self.rating, self.bookUrl, self.summary]
 
 '''

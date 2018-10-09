@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'book',
     'douban',
     'email_os',
+    'vip',
 ]
 
 MIDDLEWARE = [
