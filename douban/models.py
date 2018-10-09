@@ -19,6 +19,7 @@ class Moive(models.Model):
     name = models.CharField(max_length=30)
     zz = models.CharField(max_length=30)
     tags = models.CharField(max_length=30)
+    year = models.IntegerField(default=0)
     gxsj = models.CharField(max_length=14)
     rating = models.FloatField()
     link = models.CharField(max_length=100)
