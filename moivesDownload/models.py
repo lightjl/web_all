@@ -30,3 +30,7 @@ class Watch(models.Model):
     def __str__(self):
         return ('%s %s' % (self.moive.name_En, self.statue.means))
     
+class Wish_list(models.Model):
+    name = models.CharField(max_length=20)
+    moive_id = models.IntegerField(default=0)
+    watch_status = models.CharField(max_length=9)

@@ -24,6 +24,7 @@ class Moive(models.Model):
     rating = models.FloatField()
     link = models.CharField(max_length=100)
     bz = models.CharField(max_length=1000)
+    watch_status = models.CharField(max_length=9)
     
     def __str__(self):
         return ('%s %s %f' % (self.name, self.tags, self.rating))

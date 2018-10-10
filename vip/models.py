@@ -11,3 +11,14 @@ class Book_SN(models.Model):
 
     def __str__(self):
         return ('%s' % (self.name))
+    
+class Moive_vip(models.Model):
+    name = models.CharField(max_length=30)
+    zz = models.CharField(max_length=30)
+    url = models.CharField(max_length=100)
+    bz = models.CharField(max_length=10)
+    moive_id = models.CharField(max_length=6)
+    price = models.IntegerField(default=0)
+
+    def __str__(self):
+        return ('%s' % (self.name))

@@ -43,6 +43,7 @@ class moives:
             mvs = Moive.objects.filter(name_En=moiveE.nameEnglish)
             if (len(mvs) > 0):
                 # print(mvs[0])
+                logging.critical(moiveE.nameEnglish + ' saved already')
                 ws = Watch.objects.filter(moive=mvs[0])
                 if (len(ws) > 0):
                     return
@@ -76,7 +77,13 @@ class NameEng:
                     nameEnglish += i
                 else:
                     break
-        self.name = nameEnglish
+        
+        if len(nameEnglish) == 0:
+            self.name = nameOrigin
+        else:
+            self.name = nameEnglish
+        
+        
 
 class moiveE:
     def __init__(self, nameOrigin, ed2kLink):

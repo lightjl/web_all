@@ -13,6 +13,7 @@ class DoubanMoive:
         self.name = name
         #self.checkUrl = 'http://www.cbip.cn/Query.aspx?search_str0=' + urllib.request.quote(name)
         self.checkUrl = 'http://api.douban.com/v2/movie/search?q=' + name + '&count=1'
+        self.moive_id = 0
         self.getInfo()
 
     def getInfo(self):
@@ -23,6 +24,7 @@ class DoubanMoive:
                 self.tags = the_moive.tags
                 self.rating = the_moive.rating
                 self.year = the_moive.year
+                self.moive_id = the_moive.id
                 return [self.name, self.year, self.tags, self.rating]
         try:
             html = requests.get(self.checkUrl)
@@ -52,4 +54,5 @@ class DoubanMoive:
             moive = Moive(name = self.name, zz = '', tags = self.tags,  year = self.year,  gxsj = datetime.datetime.now(),
                           rating = self.rating, link = '',    bz = '')
             moive.save()
+            self.moive_id = Moive.objects.filter(name = self.name)[0].id
         return [self.name, self.year, self.tags, self.rating]
