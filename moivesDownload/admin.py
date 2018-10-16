@@ -9,7 +9,7 @@ class WatchAdmin(admin.ModelAdmin):
 
 class MoiveAdmin(admin.ModelAdmin):
     list_display = ('name_En', 'downloadLink')
-    fields = ('name_Zh',)
+    fields = ('name_Zh', 'name_En',)
     
 admin.site.register(Moive, MoiveAdmin)
 admin.site.register(People)
