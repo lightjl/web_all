@@ -69,6 +69,8 @@ class NameEng:
     def __init__(self, nameOrigin):
         nameEnglish = ''
         nameBegin = False
+        nameOrigin = '.'.join(nameOrigin.split('.')[:-1])   # 去掉后缀名
+        
         for i in nameOrigin:
             if(is_alphabet(i)):
                 nameBegin = True

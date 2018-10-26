@@ -54,8 +54,8 @@ class WorkInTime():
     
     def relax(self, id, alive, name=''):
         self.relaxDay(alive)  #relaxDay
-        self.__resetTime(id)
         while alive.value:
+            self.__resetTime(id)
             timeNow = datetime.now().strftime('%Y-%m-%d %H:%M')
             working = False
             for t in self.time_period:

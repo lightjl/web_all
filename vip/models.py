@@ -22,3 +22,14 @@ class Moive_vip(models.Model):
 
     def __str__(self):
         return ('%s' % (self.name))
+    
+class Moive_bilibili(models.Model):
+    moive_name = models.CharField(max_length=10)
+    zz = models.CharField(max_length=30)
+    url = models.CharField(max_length=100)
+    title = models.CharField(max_length=30)
+    moive_id = models.CharField(max_length=6)
+    bz = models.CharField(max_length=10)
+    
+    def __str__(self):
+        return ('%s' % (self.moive_name))

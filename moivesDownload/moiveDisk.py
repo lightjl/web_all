@@ -11,10 +11,7 @@ def ListEngNameMoive():
     
     listEngNameMoive = []
     for name in listMoive:
-        tmp_name = '.'.join(name.split('.')[:-1])   # 去掉后缀名
-        if len(tmp_name) == 0:
-            continue
-        listEngNameMoive.append(NameEng(tmp_name).name)
+        listEngNameMoive.append(NameEng(name).name)
     return listEngNameMoive
 
 def ListWatched(listEngNameMoive):
