@@ -36,17 +36,19 @@ def update_wish_list_watch_status():
     # vip
     m_vip = Moive_vip.objects.filter(moive_id__in = moive_id_w_z, price = 0)
     moive_id_vip = [m.id for m in m_vip]
-    print('moive_id_vip', moive_id_vip)
+#     print('moive_id_vip', moive_id_vip)
     w_vip = Wish_list.objects.filter(moive_id__in = moive_id_vip)
     w_vip.update(watch_status = 'VIP')
 
 
 
 def update_wish_list():
+    # todo todo moive_id == 0 link == ''
     update_wish_list_moive_id()
     
     update_wish_list_watch_status()
     
     search_moive_byg()
+    # todo moive_id == 0 link != ''(add to model)
     
 update_wish_list()

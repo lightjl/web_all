@@ -12,5 +12,6 @@ class Rask(models.Model):
     run_time_last = models.DateTimeField(null=True, blank=True)
     run_success_time_last = models.DateTimeField(null=True, blank=True)
     def __str__(self):
-        return ('%s %s 最后运行时间:' % (self.name, self.timePeriod)) + \
-            self.run_time_last.strftime('%d %H:%M') + ' 最后成功时间:' + self.run_success_time_last.strftime('%d %H:%M')
+        return ('最后运行时间:') + self.run_time_last.strftime('%d %H:%M')\
+            + ' 最后成功时间:' + self.run_success_time_last.strftime('%d %H:%M') \
+            + ' * %s' % (self.name) + ('%s' % (self.timePeriod))
