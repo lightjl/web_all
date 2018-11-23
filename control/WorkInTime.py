@@ -5,7 +5,7 @@ import threading
 import logging
 import calendar
 from datetime import datetime,timedelta,date
-# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s -%(message)s')
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s -%(message)s')
 
 class WorkInTime():
     def __init__(self, timeBucket, relaxTime = 60, weekday = 'all'): 
@@ -59,13 +59,13 @@ class WorkInTime():
             timeNow = datetime.now().strftime('%Y-%m-%d %H:%M')
             working = False
             for t in self.time_period:
-                logging.debug(timeNow)
-                logging.debug(name + t[0] + ' ' + t[1])
+#                 logging.debug(timeNow)
+#                 logging.debug(name + t[0] + ' ' + t[1])
                 # 正常运行
                 r = Rask.objects.filter(id=id)
                 if t[0] <= timeNow <= t[1]: # 工作时间
                     logging.debug(name + ' relax to work')
-                    if r[0].run_time_last.strftime('%Y-%m-%d %H:%M') >= t[0]:# 非第一次运行
+                    if r[0].run_success_time_last.strftime('%Y-%m-%d %H:%M') >= t[0]:# 非第一次运行
                         self.relax_during_working_time(alive) # 中场休息
                     logging.debug(name + ' working')
                     working = True

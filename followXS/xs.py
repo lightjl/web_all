@@ -116,7 +116,7 @@ class XS:
         # logging.critical(self.getUrl())
         try:
             url = self.getUrl()
-            html = requests.get(url)
+            html = requests.get(url, timeout = 1)
             selector = etree.HTML(html.text)
         except:
             return

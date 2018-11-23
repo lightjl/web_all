@@ -49,7 +49,7 @@ class Game:
         if (self.lowerPrice == self.currentPrice) \
             and (type(self.game[0].currentPrice) == type(None) or (self.game[0].currentPrice > self.currentPrice)):
             txt = 'buy: ' + self.game[0].name + ' ' + str(self.currentPrice) + '\n' + self.game[0].tbUrl
-            email.add_mail_item(subject='买游戏', topic='买游戏碟', txt=txt, minutes_delay=10, deadline=None, cover=False)
+            self.email.add_mail_item(subject='买游戏', topic='买游戏碟', txt=txt, minutes_delay=10, deadline=None, cover=False)
 #             sendHotmail = threading.Thread(target=sendMail.sendMail, args=('buy: ' + self.game[0].name + ' ' + str(self.currentPrice), \
 #                 'game: ' + self.game[0].tbUrl, 'ming188199@hotmail.com', 'hotmail', False))
             sendHotmail.start()

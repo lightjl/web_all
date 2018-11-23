@@ -11,14 +11,19 @@ bz = 'vip_qq'
 
 browser = webdriver.Firefox()
 browser.get(url)
+# 
+
+browser.find_element_by_xpath('//*[@id="film_sort"]/ul/li[1]/a').click()
 
 def check_page(lis):
+    flag_chack = True
     for li in lis[:]:
         name = li.find_element_by_xpath('./a').get_attribute('title')
 
         ms = Moive_vip.objects.filter(name = name)
         if (len(ms)>0):
             continue
+        flag_chack = False
         # //*[@id="film_list"]/ul/li[2]/a
         url = li.find_element_by_xpath('./a').get_attribute('href')
         price = 0
@@ -32,10 +37,12 @@ def check_page(lis):
         moive_db = DoubanMoive(name)
         mv = Moive_vip(name=name, url=url, bz=bz, price=price, moive_id=moive_db.moive_id)
         mv.save()
+    return flag_chack
             
 for i in range(91):
     lis = browser.find_elements_by_xpath('//*[@id="film_list"]/ul/li')
-    check_page(lis)
+    if (check_page(lis)): # 当前页全部已检查
+        break
     # next page
     browser.find_element_by_xpath('//*[@id="film_pager_small"]/a[2]/i').click()
     time.sleep(4)

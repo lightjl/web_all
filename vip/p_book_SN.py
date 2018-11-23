@@ -5,8 +5,8 @@ import numpy as np
 from vip.models import Book_SN
 from douban.doubanBook import DoubanBook
 
-url  = 'https://mebook.suning.com/ebookzhuanti.html?id=r-home-jx-topic1&title=SUPER%E4%B8%93%E4%BA%AB5000'
-bz = 'super免费'
+url  = 'https://mebook.suning.com/ebookzhuanti.html?id=1541755780581&title=%E5%A5%BD%E4%B9%A60%E5%85%83%E8%B4%AD'
+bz = '0元购'
 
 # url = input('url:https://mebook.suning.com/ebookzhuanti.html?id=r-home-jx-topic1&title=SUPER%E4%B8%93%E4%BA%AB5000')
 # bz = input('bz:super免费')
