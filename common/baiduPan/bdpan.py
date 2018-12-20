@@ -21,7 +21,7 @@ class BaiduPan:
         self.browser.find_element_by_xpath('//*[@id="TANGRAM__PSP_4__password"]').send_keys(account.passwordbd)
         # //*[@id="TANGRAM__PSP_4__submit"]
         self.browser.find_element_by_xpath('//*[@id="TANGRAM__PSP_4__submit"]').click()
-        time.sleep(10)
+        time.sleep(46)
         self.knowButtonClick()
         
     def knowButtonClick(self):

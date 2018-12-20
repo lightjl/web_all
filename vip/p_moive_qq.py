@@ -33,8 +33,11 @@ def check_page(lis):
             price_title = ''
         if price_title == '付费':
             price = 1
-        
-        moive_db = DoubanMoive(name)
+#         print("moive name: " + name)
+        try:
+            moive_db = DoubanMoive(name)
+        except:
+            continue
         mv = Moive_vip(name=name, url=url, bz=bz, price=price, moive_id=moive_db.moive_id)
         mv.save()
     return flag_chack
@@ -42,7 +45,7 @@ def check_page(lis):
 for i in range(91):
     lis = browser.find_elements_by_xpath('//*[@id="film_list"]/ul/li')
     if (check_page(lis)): # 当前页全部已检查
-        break
+        pass
     # next page
     browser.find_element_by_xpath('//*[@id="film_pager_small"]/a[2]/i').click()
     time.sleep(4)
