@@ -10,6 +10,7 @@ import requests
 from common.sendMail import sendMail
 import threading
 from email_os import p_email_os
+import logging
 
 class qieman_login:
     def __init__(self):
@@ -99,7 +100,7 @@ class fund_qieman_me:
         self.copies()
         self.name()
         self.code() # 此处区分是谁的仓位
-        self.yk()
+#         print('code', self.code)
 
     def code(self):
         fs = Fund.objects.filter(name=self.name)
@@ -108,55 +109,57 @@ class fund_qieman_me:
         return self.code
     
     def copies(self):
-        self.copies = float(self.tr.find_element_by_xpath('./td[1]/div[2]/span[1]').text[:-1])
-        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr[1]/td[1]/div[2]/span[1]
-        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr[1]/td[1]/div[2]/span[1]/text()[1]
+        self.copies = float(self.tr.find_element_by_xpath('./td[1]/div/div/span/span[1]').text[:-1])
+        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[7]/section[1]/div/table/tbody/tr[2]/td/div/div[1]/span/span
         return self.copies
 
     def name(self):
-        self.name = self.tr.find_element_by_xpath('./td[1]/div[1]').text
-#         //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr[1]/td[1]/div[1]
+        self.name = self.tr.find_element_by_xpath('./td[1]/div/div[1]').text
+#         //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[7]/section[1]/div/table/tbody/tr[2]/td[1]/div[1]
+        self.name = self.name.split('(')[0]
         return self.name
-    
-    def yk(self):
-        self.yk = self.tr.find_element_by_xpath('./td[2]/div[3]/span[2]').text
-        try:
-            yk = float(self.yk)
-        except:
-            yk = 0
-        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr[1]/td[2]/div[3]/span[2]/text()
-        self.yk = str(yk)
-        return self.yk
         
     def mx(self):
         # todo 处理买卖数据
         browser = self.browser
         self.browser.get(self.url)
         time.sleep(4)
-        self.trs = self.browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[3]/table/tbody/tr')
+        yk_xpath    = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div[3]/div/div/div/span[2]'
+        trs_xpath   = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[3]/table/tbody/tr'
+        price_xpath = './td[1]/div[2]/span/span'
+        ph_xpath    = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[2]/div/div[4]/div/span[2]/span'
+        self.yk = self.browser.find_element_by_xpath(yk_xpath).text
+        try:
+            yk = float(self.yk)
+        except:
+            yk = 0
+        self.yk = str(yk)
+        
+        self.trs = self.browser.find_elements_by_xpath(trs_xpath)
 
         #price_test = float(trs_test[0].find_element_by_xpath('./td[1]/div[2]/span/span').text)
         #print(price_test)
 
         try:
-            min_price = float(self.trs[0].find_element_by_xpath('./td[1]/div[2]/span/span').text)
+            price_min = float(self.trs[0].find_element_by_xpath(price_xpath).text)
         except:
-            min_price = 99
+            price_min = 99
         for tr in self.trs[1:]:
             try:
-                tmp = float(tr.find_element_by_xpath('./td[1]/div[2]/span/span').text)
-                if (tmp <= min_price):
-                    min_price = tmp
+                tmp = float(tr.find_element_by_xpath(price_xpath).text)
+                if (tmp <= price_min):
+                    price_min = tmp
             except:
                 continue
         try:
-            price_hold = float(self.browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[2]/div/div[4]/div/span[2]/span').text)
+            price_hold = float(self.browser.find_element_by_xpath(ph_xpath).text)
         except:
             price_hold = min_price
-        if (min_price > price_hold):
-            min_price = price_hold
-        self.price_min = min_price
+        if (price_min > price_hold):
+            price_min = price_hold
+        self.price_min = price_min
         self.price_hold = price_hold
+#         print('mx: ', self.code, self.name, self.yk, self.price_min, self.price_hold)
         
 class longwin_detail:
     def __init__(self):
@@ -180,12 +183,19 @@ class longwin_detail:
         url = 'https://qieman.com/longwin/detail'
         browser.get(url)
         trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[*]/td[1]/div[2]')
-        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/table[2]/tbody/tr[2]/td[1]/div[1]
-        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/table[2]/tbody/tr[*]/td[1]/div[2]
+        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[2]/td[1]/div[1]
+        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[*]/td[1]/div[2]
+        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[15]/td[1]/div[1]/span
+        # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[*]/td[1]/div[2]
         browser_fund = self.browser_fund
         today = datetime.date.today()
         today_11 = datetime.datetime(today.year, today.month, today.day, 11)
         for tr in trs:
+            try:    # 忽略"波段仓位"
+                if (tr.find_element_by_xpath('..//div[1]/span').text == '波段仓位'):
+                    continue
+            except:
+                pass
             tmp = fund_qieman(tr, browser_fund)
             fs = Fund.objects.filter(code=tmp.code, name=tmp.name)
             if (len(fs)>0): #已有
@@ -225,8 +235,8 @@ class longwin_detail_my:
             self.quit()
     
     def check(self):
-        self.trs = self.me.browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div/div[7]/section[1]/div/table/tbody/tr')
-    
+        self.trs = self.me.browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[7]/section[1]/div/table/tbody/tr')
+        # print('trs', self.trs)
         today = datetime.date.today()
         today_12 = datetime.datetime(today.year, today.month, today.day, 12)
         success = True
@@ -238,10 +248,11 @@ class longwin_detail_my:
                     continue
                 success = False
                 tmp.mx()
+#                 print('bf update:', tmp.code, tmp.name, tmp.price_min, tmp.yk)
                 fs.update(fs_my=tmp.copies, yk_my=tmp.yk\
                           , price_min_my=tmp.price_min, price_hold_my=tmp.price_hold, gxsj=today_12\
                           , notice_today=False)
-                print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk)
+                print('updated:', tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk)
             except:
                 continue
         return success
@@ -294,6 +305,7 @@ class Fund_deal:
             f.gxsj = datetime.datetime.now()
             f.gszzl = gszzl
             f.save()
+        logging.critical('净值更新完成')
             
     def buy(self):
         if datetime.datetime.now() < self.today_14:
@@ -311,6 +323,7 @@ class Fund_deal:
                 fs_my = float(f.fs_my)
             except:
                 fs_my = 0
+            logging.debug('dealing:', f.code, f.name, fs_my)
             if f.price_min * 0.6 >= gz:
                 buy = 2 * f.fs - fs_my
             elif f.price_min * 0.7 >= gz:
@@ -333,3 +346,4 @@ class Fund_deal:
             today_15 = datetime.datetime(today.year, today.month, today.day, 14, 55)
             print('add!!!')
             email.add_mail_item(subject='基金', topic='且慢', txt=texts, minutes_delay=20, deadline=today_15, cover=True)
+    
