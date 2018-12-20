@@ -37,7 +37,7 @@ class Email_item():
         t.save()
     
     def update2os(self):
-        if ((self.deadline) and self.deadline > datetime.datetime.now()): # 迟来的信息不发
+        if ((self.deadline) and self.deadline < datetime.datetime.now()): # 迟来的信息不发
             return
         self.update_sub()
         self.update_topic()
