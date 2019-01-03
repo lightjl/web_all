@@ -8,6 +8,7 @@ from pathlib import Path
 
 def ListEngNameMoive():
     listMoive = (os.listdir(os.path.expanduser('/media/l/TOSHIBA EXT')))
+    # todo fixing next
     
     listEngNameMoive = []
     for name in listMoive:

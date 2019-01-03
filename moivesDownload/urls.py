@@ -18,6 +18,7 @@ from . import fixDatebaseFromMail
 from . import mj
 from . import views
 from . import downloadbd
+from . import download_utweb
 from . import moiveDisk
 
 urlpatterns = [
@@ -27,4 +28,5 @@ urlpatterns = [
     path('change/', views.change),
     path('changeauto/', moiveDisk.changeWatchDm),
     path('downloadbd/', downloadbd.downloadbd),
+    path('download_utweb/', download_utweb.download_utweb),
 ]

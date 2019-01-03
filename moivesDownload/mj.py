@@ -17,7 +17,7 @@ from django.http import HttpResponse
 logging.basicConfig(level=logging.CRITICAL, format='%(asctime)s - %(levelname)s -%(message)s')
 
  
-def loginAndDownload(request):  # 登陆函数
+def loginAndDownload(request):  # 鐧婚檰鍑芥暟
     myMoives = moiveE.moives()
     header = {
         'Accept':'application/json, text/javascript, */*; q=0.01',
@@ -29,7 +29,7 @@ def loginAndDownload(request):  # 登陆函数
 
     url = 'http://www.zimuzu.tv/User/Login/ajaxLogin'
 
-    # postData="account=用户名&password=密码&remember=1"
+    # postData="account=鐢ㄦ埛鍚�&password=瀵嗙爜&remember=1"
     login_session = requests.Session()
     login_session.post(url,
            data=account.postData233,
@@ -60,7 +60,7 @@ def loginAndDownload(request):  # 登陆函数
         for moive in moives:
             try:
                 name = moive.xpath('./a[1]/span/text()')[0]
-                link = moive.xpath('./div/div/div/a[2]/@href')[0]
+                link = moive.xpath('./div/div/div/a[1]/@href')[0]
                 mv = moiveE.moiveE(name, link)
                 myMoives.send(mv)
                 # print(moive.xpath('./a[1]/span/text()')[0])

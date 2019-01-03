@@ -343,7 +343,7 @@ class Fund_deal:
         if (len(texts) > 0):
             email = p_email_os.Email_os()
             today = datetime.datetime.now()
-            today_15 = datetime.datetime(today.year, today.month, today.day, 14, 55)
+            today_15 = datetime.datetime(today.year, today.month, today.day, 14, 45)
             print('add!!!')
             email.add_mail_item(subject='基金', topic='且慢', txt=texts, minutes_delay=20, deadline=today_15, cover=True)
     
