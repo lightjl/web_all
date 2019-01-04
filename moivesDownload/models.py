@@ -34,3 +34,10 @@ class Wish_list(models.Model):
     name = models.CharField(max_length=20)
     moive_id = models.IntegerField(default=0)
     watch_status = models.CharField(max_length=9)
+    
+
+class Rss(models.Model):
+    name = models.CharField(max_length=10)
+    rss_url = models.CharField(max_length=100)
+    def __str__(self):
+        return ('%s' % (self.name))

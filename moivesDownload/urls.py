@@ -16,6 +16,7 @@ Including another URLconf
 from django.urls import path
 from . import fixDatebaseFromMail
 from . import mj
+from . import mj_rss
 from . import views
 from . import downloadbd
 from . import download_utweb
@@ -25,6 +26,7 @@ urlpatterns = [
     path('show/', views.show),
     path('show/<int:dm>/', views.showdm),
     path('download/', mj.loginAndDownload),
+    path('download_rss/', mj_rss.find_moives_from_rss),
     path('change/', views.change),
     path('changeauto/', moiveDisk.changeWatchDm),
     path('downloadbd/', downloadbd.downloadbd),

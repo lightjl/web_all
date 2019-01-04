@@ -1,5 +1,5 @@
 from django.contrib import admin
-from moivesDownload.models import Moive, People, Watch, Statue_dm
+from moivesDownload.models import Moive, People, Watch, Statue_dm, Rss
 # Register your models here.
 
 class WatchAdmin(admin.ModelAdmin):
@@ -15,3 +15,4 @@ admin.site.register(Moive, MoiveAdmin)
 admin.site.register(People)
 admin.site.register(Watch, WatchAdmin)
 admin.site.register(Statue_dm)
+admin.site.register(Rss)
