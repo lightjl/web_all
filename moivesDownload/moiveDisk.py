@@ -6,8 +6,8 @@ from moivesDownload.models import Moive, People, Watch, Statue_dm
 from django.http import HttpResponse
 from pathlib import Path
 
-def ListEngNameMoive():
-    listMoive = (os.listdir(os.path.expanduser('/media/l/TOSHIBA EXT')))
+def ListEngNameMoive(fold):
+    listMoive = (os.listdir(os.path.expanduser(fold)))
     # todo fixing next
     
     listEngNameMoive = []
@@ -39,13 +39,22 @@ def UpdateInComputer(listComputer):
     watchs = Watch.objects.filter(moive__in=mvs)
     watchs.update(statue = dm_tochange[0])
 
+def which_pan():
+    for i in range(ord('F'),ord('J')):
+        fold = chr(i) + ':/a_moive_remoiveable'
+        if Path(fold).exists():
+            return fold
+    return False
+
 def changeWatchDm(request):
-    if not Path('/media/l/TOSHIBA EXT').exists():
-        return 
+    fold = which_pan()
+    if not fold:
+        return
     
-    listEngNameMoive = ListEngNameMoive()
+    listEngNameMoive = ListEngNameMoive(fold)
     # print(listEngNameMoive)
     # 更新已看完的moives
+    # todo
     listWatched = ListWatched(listEngNameMoive)
     
     UpdateWatched(listWatched)
