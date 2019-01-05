@@ -7,9 +7,18 @@ class Utweb:
     def __init__(self, browser):
         self.browser = browser
         
+    def know_button(self):
+        xpath = '//*[@id="search-overlay-mask"]/div[3]/i'
+        try:
+            self.browser.find_element_by_xpath(xpath).click()
+        except:
+            return
+        
     def add_torrent(self, magnet):
         url = 'http://127.0.0.1:19575/gui/index.html?localauth=localapi370621dc48c451ff:'
         self.browser.get(url)
+        time.sleep(6)
+        self.know_button()
         time.sleep(6)
         add_button_xpath = '//*[@id="auto-upload-btn"]'
         self.browser.find_element_by_xpath(add_button_xpath).click()

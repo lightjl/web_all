@@ -43,7 +43,11 @@ class moives:
             mvs = Moive.objects.filter(name_En=moiveE.nameEnglish)
             if (len(mvs) > 0):
                 # print(mvs[0])
-                logging.critical(moiveE.nameEnglish + ' saved already')
+                if mvs[0].downloadLink != moiveE.ed2kLink:
+                    mvs.update(downloadLink = moiveE.ed2kLink)
+                    logging.critical(moiveE.nameEnglish + ' change link')
+                else:
+                    logging.critical(moiveE.nameEnglish + ' already saved')
                 ws = Watch.objects.filter(moive=mvs[0])
                 if (len(ws) > 0):
                     return
