@@ -47,7 +47,7 @@ def which_pan():
     return False
 
 def changeWatchDm(request):
-    fold = which_pan()
+    fold = 'D:\download'
     if not fold:
         return
     

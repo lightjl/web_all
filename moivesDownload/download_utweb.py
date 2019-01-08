@@ -30,13 +30,15 @@ def startBrower():
     return browser
 
 def download_utweb(request):
+    browser = startBrower()
+    ut = utweb.Utweb(browser)
+    ut.del_upload()
     moives = Moive.objects.filter(watch__people__name="me", watch__statue__means="要下载")
     for mv in moives:
         logging.debug(mv.name_En + ' ' + mv.downloadLink)
     if (len(moives)==0):
+        browser.quit()
         return HttpResponse("no mv to download")
-    browser = startBrower()
-    ut = utweb.Utweb(browser)
     downloadingDm = Statue_dm.objects.filter(means="在下载")[0]
     showText = ''
     for moive in moives:
