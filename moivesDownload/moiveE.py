@@ -13,7 +13,7 @@ def is_alphabet(uchar):
         return False
     
 def is_punctuations(uchar):
-    punctuations_list = ['.', '-', '\'']
+    punctuations_list = ['.', '-', '\'', ' ']
     if (uchar in punctuations_list):
         return True
     else:

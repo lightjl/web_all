@@ -17,8 +17,8 @@ from django.http import HttpResponse
 logging.basicConfig(level=logging.CRITICAL, format='%(asctime)s - %(levelname)s -%(message)s')
 
 def download_this_or_not(name):
-    if 'mp4' in name:
-        if  ('Chi_Eng' in name) or ('中英' in name):
+    if ('mp4' in name) or ('MP4' in name):
+        if  ('Chi_Eng' in name) or (('中' in name) and ('字幕' in name)):
             return True
     return False
 
