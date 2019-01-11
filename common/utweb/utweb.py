@@ -29,19 +29,33 @@ class Utweb:
         commit_xpath = '//*[@id="upload-torrent-modal"]/div[2]/div[2]/button'
         self.browser.find_element_by_xpath(commit_xpath).click()
     
-    def del_upload(self):
+    def del_a_torrent(self, div):
+        del_button = './div/div[2]/div[2]/div[2]/i'
+        remove_button = '//*[@id="auto-remove-torrent-btn"]'
+        div.find_element_by_xpath(del_button).click()
+        time.sleep(6)
+        self.browser.find_element_by_xpath(remove_button).click()
+        
+    def check_to_del(self):
         browser = self.browser
         browser.get(self.url)
         self.know_button()
         xpath = '//div[@id="media-library-content"]/div[@class="media-element"]'
         divs = browser.find_elements_by_xpath(xpath)
         statu = './div/div[2]/div[1]/div[2]/div[1]/div[1]/span'
-        del_button = './div/div[2]/div[2]/div[2]/i'
-        remove_button = '//*[@id="auto-remove-torrent-btn"]'
         for div_test in divs:
-            if ('上' == div_test.find_element_by_xpath(statu).text[0]):
-                print(div_test.find_element_by_xpath('./div/div[2]/div[1]/div[1]').text)
-                div_test.find_element_by_xpath(del_button).click()
-                time.sleep(6)
-                browser.find_element_by_xpath(remove_button).click()
+            self.del_upload(div_test, statu)
+            self.del_download_0(div_test, statu)
+    
+    def del_upload(self, div_test, statu):
+        if ('上' == div_test.find_element_by_xpath(statu).text[0]):
+            print(div_test.find_element_by_xpath('./div/div[2]/div[1]/div[1]').text + ' uploaded')
+            self.del_a_torrent(div_test)
+    
+    def del_download_0(self, div_test, statu):
+        jd = './div/div[2]/div[1]/div[2]/div[2]'
+        if ('下' == div_test.find_element_by_xpath(statu).text[0]):
+            if(div_test.find_element_by_xpath(jd).text == '0%'):
+                print(div_test.find_element_by_xpath('./div/div[2]/div[1]/div[1]').text + ' cannot download')
+                self.del_a_torrent(div_test)
         

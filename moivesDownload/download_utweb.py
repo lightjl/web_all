@@ -32,7 +32,8 @@ def startBrower():
 def download_utweb(request):
     browser = startBrower()
     ut = utweb.Utweb(browser)
-    ut.del_upload()
+    ut.check_to_del()
+    
     moives = Moive.objects.filter(watch__people__name="me", watch__statue__means="要下载")
     for mv in moives:
         logging.debug(mv.name_En + ' ' + mv.downloadLink)
