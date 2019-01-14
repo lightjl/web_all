@@ -67,8 +67,7 @@ def sendMail(sub, context, receiver='ming188199@hotmail.com', sendFrom='hotmail'
         try:
             tosendFlag = False
             if sendFrom == 'hotmail':
-                smtp = smtplib.SMTP()
-                smtp.connect('smtp-mail.outlook.com')
+                smtp = smtplib.SMTP('smtp-mail.outlook.com')
                 smtp.ehlo()
                 smtp.starttls() 
                 smtp.login(emailAccount.hotname, emailAccount.hotpass)
