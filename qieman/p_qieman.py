@@ -35,31 +35,34 @@ class fund_qieman:
         self.copies()
         self.name()
         self.yk()
+        print(self.name, self.code, self.copies, self.yk)
         
 
     def code(self):
-        code_str = (re.search('\([.0-9]+\)', self.tr.text))
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[*]/a'
+        #           //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[2]/a
+        self.url = self.tr.get_attribute('href')
+        code_str = (re.search('/[0-9]+', self.url))
         if code_str:
-            self.code = (code_str.group()[1:-1])
-            if self.zlr == 'Ebig':
-                self.url = 'https://qieman.com/longwin/funds/%s?investType=E' % self.code
-            else:
-                self.url = 'https://qieman.com/longwin/position/%s' % self.code
-            return self.code
+            self.code = (code_str.group()[1:])
     
     def copies(self):
-        copies_str = (re.search('有[.0-9]+份', self.tr.find_element_by_xpath('../../td[2]/div[1]').text))
-        if copies_str:
-            self.copies = (copies_str.group()[1:-1])
-            return self.copies
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[*]/a'
+        #           //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[2]/a/div/section[1]
+        copies_str = (self.tr.find_element_by_xpath('./div/section[1]').text)
+        self.copies = (copies_str[:-1])
+        return self.copies
     
     def name(self):
-#         self.name = self.tr.text.split('(')[0] # 全称
-        self.name = self.tr.find_element_by_xpath('..//div[1]').text
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[*]/a'
+        #           //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[2]/a/section
+        self.name = (self.tr.find_element_by_xpath('./section').text).split()[0]
         return self.name
     
     def yk(self):
-        self.yk = self.tr.find_element_by_xpath('../../td[2]/div[2]/span').text
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[*]/a'
+        #            //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[3]/div[2]/a/div/section[3]/span
+        self.yk = self.tr.find_element_by_xpath('./div/section[3]/span').text
         try:
             yk = float(self.yk)
         except:
@@ -73,22 +76,27 @@ class fund_qieman:
         browser = self.browser
         browser.get(self.url)
         time.sleep(4)
-        trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/section[4]/table/tbody/tr')
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[3]/div[2]/div[*]'
+        # price      //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[3]/div[2]/div[1]/div[1]/span/span
+        trs = browser.find_elements_by_xpath(trs_xpath)
+        price_xpath = './div[1]/span/span'
         try:
-            min_price = float(trs[0].find_element_by_xpath('./td[1]/div[2]/span').text)
+            min_price = float(trs[0].find_element_by_xpath(price_xpath).text)
         except:
             min_price = 99
         for tr in trs[1:]:
-            tmp = float(tr.find_element_by_xpath('./td[1]/div[2]/span').text)
+            tmp = float(tr.find_element_by_xpath(price_xpath).text)
             if (tmp <= min_price):
                 min_price = tmp
+        price_hold_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div[2]/div/div[2]/div/span[2]/span'
         try:
-            price_hold = float(browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/section[2]/div/div[2]/div/span[2]/span').text)
+            price_hold = float(browser.find_element_by_xpath(price_hold_xpath).text)
         except:
             price_hold = min_price
         if (min_price > price_hold):
             min_price = price_hold
-        self.jz = float(browser.find_element_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/section[2]/div/div[4]/div/span[2]/span').text)
+        jz_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div[2]/div/div[4]/div/span[2]/span'
+        self.jz = float(browser.find_element_by_xpath(jz_xpath).text)
         self.price_min = min_price
         self.price_hold = price_hold
         
@@ -109,14 +117,18 @@ class fund_qieman_me:
         return self.code
     
     def copies(self):
-        self.copies = float(self.tr.find_element_by_xpath('./td[1]/div/div/span/span[1]').text[:-1])
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[4]/div[*]/div[*]'
+        #            //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[4]/div[3]/div[2]/div/div[1]/span[2]
+        self.copies = float(self.tr.find_element_by_xpath('./div/div[1]/span[2]').text[:-1])
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[7]/section[1]/div/table/tbody/tr[2]/td/div/div[1]/span/span
         return self.copies
 
     def name(self):
-        self.name = self.tr.find_element_by_xpath('./td[1]/div/div[1]').text
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[4]/div[*]/div[*]'
+        #            //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[4]/div[3]/div[3]/p
+        self.name = self.tr.find_element_by_xpath('./p').text
 #         //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[7]/section[1]/div/table/tbody/tr[2]/td[1]/div[1]
-        self.name = self.name.split('(')[0]
+        self.name = self.name.split()[0]
         return self.name
         
     def mx(self):
@@ -124,10 +136,10 @@ class fund_qieman_me:
         browser = self.browser
         self.browser.get(self.url)
         time.sleep(4)
-        yk_xpath    = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[1]/div[2]/div[3]/div/div/div/span[2]'
-        trs_xpath   = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[3]/table/tbody/tr'
-        price_xpath = './td[1]/div[2]/span/span'
-        ph_xpath    = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[2]/div/div[4]/div/span[2]/span'
+        yk_xpath    = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[2]/div[1]/div[2]/div/div[3]/div/div/div/span[2]'
+        trs_xpath   = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[2]/div[3]/div[2]/div[*]'
+        price_xpath = './div[1]/span/span/span'
+        ph_xpath    = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[2]/div[1]/div[3]/div/div[4]/div/span[2]/span'
         self.yk = self.browser.find_element_by_xpath(yk_xpath).text
         try:
             yk = float(self.yk)
@@ -177,12 +189,15 @@ class longwin_detail:
                 self.check()
             else:
                 break
+        self.quit()
         
     def check(self):
         browser = self.browser
-        url = 'https://qieman.com/longwin/detail'
+        url = 'https://qieman.com/longwin/compositions/E'
         browser.get(url)
-        trs = browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[*]/td[1]/div[2]')
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[*]/div[*]/a'
+        #            //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[*]/div[*]/a
+        trs = browser.find_elements_by_xpath(trs_xpath)
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[2]/td[1]/div[1]
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[*]/td[1]/div[2]
         # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div/table[2]/tbody/tr[15]/td[1]/div[1]/span
@@ -191,11 +206,20 @@ class longwin_detail:
         today = datetime.date.today()
         today_11 = datetime.datetime(today.year, today.month, today.day, 11)
         for tr in trs:
-            try:    # 忽略"波段仓位"
-                if (tr.find_element_by_xpath('..//div[1]/span').text == '波段仓位'):
-                    continue
+            if (len(tr.find_element_by_xpath('./div/section/span').text) == 0):
+                # 忽略"波段"
+                continue
+            try:
+                # 已清仓
+                tr.find_element_by_xpath('./section').text
             except:
-                pass
+                # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[*]/div[*]/a
+                # //*[@id="app"]/div/div[2]/div/div/div[1]/div/div[2]/div[6]/div[4]/a/div/section[1]
+                name_xpath = './div/section[1]'
+                name = tr.find_element_by_xpath(name_xpath).text
+                qc_name = Fund.objects.filter(name=name)
+                qc_name.delete()
+                continue
             tmp = fund_qieman(tr, browser_fund)
             fs = Fund.objects.filter(code=tmp.code, name=tmp.name)
             if (len(fs)>0): #已有
@@ -212,7 +236,7 @@ class longwin_detail:
                          ,gxsj=today_11, notice_today=False)
                 f.save()
             print(tmp.code, tmp.name, tmp.price_min, tmp.price_hold, tmp.yk, tmp.jz)
-        self.quit()
+        
     
     def quit(self):
         self.browser.quit()
@@ -235,7 +259,9 @@ class longwin_detail_my:
             self.quit()
     
     def check(self):
-        self.trs = self.me.browser.find_elements_by_xpath('//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[7]/section[1]/div/table/tbody/tr')
+        trs_xpath = '//*[@id="app"]/div/div[2]/div/div/div[1]/div/div/div[5]/div[*]/div[*]'
+        self.trs = self.me.browser.find_elements_by_xpath(trs_xpath)
+        
         # print('trs', self.trs)
         today = datetime.date.today()
         today_12 = datetime.datetime(today.year, today.month, today.day, 12)
