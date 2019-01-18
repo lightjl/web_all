@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'douban',
     'email_os',
     'vip',
+    'xmjqd',
 ]
 
 MIDDLEWARE = [
