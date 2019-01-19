@@ -22,14 +22,23 @@ class item_gsy:
         else:
             self.nlz = nl_str[2]
             
+    def count_bfl_w(self, bfl_str):
+        bfl = bfl_str[:-1]
+        if bfl_str[-1] == '千':
+            return int(bfl)/10
+        if bfl_str[-1] == '亿':
+            return int(bfl)*10000
+        return int(bfl)
+    
     def find_items(self):
-        name_xpath = '//*[@id="app"]/div[2]/div/div/div[1]/div[2]/div[1]/span[1]'
-        lb_xpath = '//*[@id="app"]/div[2]/div/div/div[1]/div[2]/div[2]/span[2]'
-        sl_xpath = '//*[@id="app"]/div[2]/div/div/div[1]/div[2]/div[1]/span[2]' # (30首)
-        nl_xpath = '//*[@id="app"]/div[2]/div/div/div[1]/div[2]/div[2]/span[5]'
+        #             //*[@id="app"]/div[2]/div/div[1]/div[2]/div[1]/span[1]
+        name_xpath = '//*[@id="app"]/div[2]/div/div[1]/div[2]/div[1]/span[1]'
+        lb_xpath = '//*[@id="app"]/div[2]/div/div[1]/div[2]/div[2]/span[2]'
+        sl_xpath = '//*[@id="app"]/div[2]/div/div[1]/div[2]/div[1]/span[2]' # (30首)
+        nl_xpath = '//*[@id="app"]/div[2]/div/div[1]/div[2]/div[2]/span[5]'
         
-        bfl_w_xpath = '//*[@id="app"]/div[2]/div/div/div[1]/div[2]/div[2]/span[7]' # 274万+
-        bz_xpath = '//*[@id="app"]/div[2]/div/div/div[1]/div[2]/div[3]' 
+        bfl_w_xpath = '//*[@id="app"]/div[2]/div/div[1]/div[2]/div[2]/span[7]' # 274万+
+        bz_xpath = '//*[@id="app"]/div[2]/div/div[1]/div[2]/div[3]' 
         self.url = self.browser.current_url  
 #         print(self.url)
         
@@ -38,7 +47,8 @@ class item_gsy:
         self.sl    =    self.browser.find_element_by_xpath(sl_xpath).text[1:-2]
         nl_str = self.browser.find_element_by_xpath(nl_xpath).text
         self.nl(nl_str)
-        self.bfl_w    =    self.browser.find_element_by_xpath(bfl_w_xpath).text[:-2]
+        bfl_str    =    self.browser.find_element_by_xpath(bfl_w_xpath).text[:-1]
+        self.bfl_w = self.count_bfl_w(bfl_str)
         self.bz    =    self.browser.find_element_by_xpath(bz_xpath).text
         print(self.name, self.nlq, self.nlz, self.lb, self.sl, self.bfl_w, self.bz)
         item = gsy(name = self.name, lb = self.lb, sl = self.sl, nlq = self.nlq, nlz = self.nlz\
@@ -56,7 +66,7 @@ class p_gsy:
         self.url = 'http://www.jiqid.com/downloadres/'
     
     def check(self):
-        self.browser = webdriver.Firefox()
+        self.browser = webdriver.Chrome()
         self.browser.get(self.url)
         self.item = item_gsy(self.browser)
         lb_xpath = '//*[@id="app"]/div[2]/div[2]/div/div[1]/div'
@@ -67,15 +77,18 @@ class p_gsy:
         self.browser.quit()
         
     def check_lb(self):
-        next_page_xpath = '//*[@id="app"]/div[2]/div[2]/div/div[2]/div[2]/div/div[3]'
+        next_page_xpath = '//div[@class="list_arrow next"]'
+
+        time.sleep(4)
         next_page = self.browser.find_element_by_xpath(next_page_xpath)
-        next_class = next_page.get_attribute('class')
+        next_class = next_page.find_element_by_xpath('../div').get_attribute('class')
         # disabled
         while ('disabled' not in next_class):
             self.check_page()
             next_page.click()
             next_page = self.browser.find_element_by_xpath(next_page_xpath)
-            next_class = next_page.get_attribute('class')
+            next_class = next_page.find_element_by_xpath('../div').get_attribute('class')
+            time.sleep(4)
     
     def check_page(self):
         li_xpath = '//*[@id="type1"]/div/ul/li[*]'
