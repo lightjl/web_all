@@ -20,12 +20,15 @@ class BookDownloadInfo:
             for s in download_selector:
                 if (len(s.xpath('./text()')) > 0) and ('百度' in s.xpath('./text()')[0]):
                     # //*[@id="content"]/p[11]/span/a[1]
-                    self.bddownload = (s.xpath('./@href')[0])
-                    bdmmstr = (s.xpath('../text()[2]')[0])
-                    bdmm = (re.search('：[ a-z0-9]*', bdmmstr))
-                    if bdmm:
-                        self.mm = ((bdmm.group()).split('：')[1])
-                    return
+                    try:
+                        self.bddownload = (s.xpath('./@href')[0])
+                        bdmmstr = (s.xpath('../text()[2]')[0])
+                        bdmm = (re.search('：[ a-z0-9]*', bdmmstr))
+                        if bdmm:
+                            self.mm = ((bdmm.group()).split('：')[1])
+                        return
+                    except:
+                        self.mm = ' '
 
             return
         
@@ -105,12 +108,14 @@ def mebook(startPage, endPage):
             print('mebook done')
             return  # 结束
         lis = selector.xpath('//*[@id="primary"]/ul/li')
+        zz_page = True
         for li in lis:
             theBook = BookInfo(li)
             if (theBook.isBook()):
                 bs = Book.objects.filter(bookname = theBook.bookName, zz = theBook.zz, gxsj = theBook.gxrq)
                 if (len(bs)>0):
                     continue
+                zz_page = False
                 db = DoubanBook(theBook.bookName, theBook.zz)
                 [tags, rating, bookUrl, summary] = (db.getBookInfo())
                 #print(theBook.bookName, theBook.zz, tags, rating, bookUrl, summary)
@@ -120,10 +125,12 @@ def mebook(startPage, endPage):
                     rating = 0
                 bb = Book(bookname = theBook.bookName, zz=theBook.zz, gxsj = theBook.gxrq\
                         , tags=','.join(tags), rating=rating, cclink=theBook.booklink\
-                        , dblink=bookUrl, bz=summary)
+                        , dblink=bookUrl, bz=summary, zzFlag=0)
                 bb.save()
                 #print(theBook.bookName + ' ' + theBook.zz + ' ' + theBook.gxrq)
         print('the %d page done' % i)
+        if (zz_page):
+            return
         
 '''
 def downloadMebook(url):
