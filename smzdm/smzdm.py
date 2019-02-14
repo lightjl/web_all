@@ -48,7 +48,7 @@ def checkWeb(browser, url):
 def checkAll():
     urls = zdmWeb.objects.filter(gxFlag = True)
     logging.critical(urls)
-    browser = webdriver.Firefox()
+    browser = webdriver.Chrome()
     for url in urls:
          checkWeb(browser, url.url)
     browser.quit()
