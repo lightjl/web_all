@@ -14,7 +14,7 @@ import logging
 
 class qieman_login:
     def __init__(self):
-        self.browser = webdriver.Chrome()
+        self.browser = webdriver.Firefox()
         url = 'https://qieman.com/user/login'
         self.browser.get(url)
         self.login()
@@ -180,8 +180,8 @@ class longwin_detail:
         min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
         if min_gxsj >= today_11:
             return
-        self.browser = webdriver.Chrome()
-        self.browser_fund = webdriver.Chrome()
+        self.browser = webdriver.Firefox()
+        self.browser_fund = webdriver.Firefox()
         
         while True:
             min_gxsj = Fund.objects.all().aggregate(Min('gxsj'))['gxsj__min']
