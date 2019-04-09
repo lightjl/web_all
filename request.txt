@@ -1,12 +1,11 @@
 beautifulsoup4==4.6.0
 bs4==0.0.1
-certifi==2017.11.5
 chardet==3.0.4
 Django==2.0.1
 django-bootstrap3==9.1.0
 idna==2.6
-imbox==0.9.5
-lxml==4.1.1
+imbox
+lxml
 pytz==2017.3
 requests==2.18.4
 selenium==3.8.1

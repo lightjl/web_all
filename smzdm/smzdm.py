@@ -19,31 +19,34 @@ def checkWeb(browser, url):
         if (not plus) and ('PLUS' in hwmc):
             continue
         url = (li.find_element_by_xpath('./div/div[2]/h5/a[1]').get_attribute("href"))
-        yhStr = li.find_element_by_xpath('./div/div[2]/h5/a[2]/div').text
-        if '满' in yhStr:
-            mj = True
-        else:
-            mj = False
-        if '包邮' in yhStr:
-            by = True
-        else:
-            by = False
-        
-        price = re.search('[.0-9]*元', yhStr)
-        if price:
-            je = float((price.group())[:-1])
-        else:
-            je = 0
-        # print(yhStr)
-        gxsj = (li.find_element_by_xpath('./div/div[2]/div[2]/div[2]/span').text)
-        sps = zdmSp.objects.filter(hwmc=hwmc, gxsj=gxsj)
-        if len(sps)>=1 :
-            break
-        sp = zdmSp(hwmc=hwmc, mj=mj, by=by, je=je, url=url, bz=yhStr, gxsj=gxsj)
-        sp.save()
-        if not ('-' in gxsj):
-            txt = 'smzdm:' + hwmc + ' ' + str(je) + '\n' + yhStr + '\n' + url  # 邮件通知
-            email.add_mail_item(subject='什么值得买', topic='什么值得买', txt=txt, minutes_delay=10, deadline=None, cover=False)
+        try:
+            yhStr = li.find_element_by_xpath('./div/div[2]/h5/a[2]/div').text
+            if '满' in yhStr:
+                mj = True
+            else:
+                mj = False
+            if '包邮' in yhStr:
+                by = True
+            else:
+                by = False
+
+            price = re.search('[.0-9]*元', yhStr)
+            if price:
+                je = float((price.group())[:-1])
+            else:
+                je = 0
+            # print(yhStr)
+            gxsj = (li.find_element_by_xpath('./div/div[2]/div[2]/div[2]/span').text)
+            sps = zdmSp.objects.filter(hwmc=hwmc, gxsj=gxsj)
+            if len(sps)>=1 :
+                break
+            sp = zdmSp(hwmc=hwmc, mj=mj, by=by, je=je, url=url, bz=yhStr, gxsj=gxsj)
+            sp.save()
+            if not ('-' in gxsj):
+                txt = 'smzdm:' + hwmc + ' ' + str(je) + '\n' + yhStr + '\n' + url  # 邮件通知
+                email.add_mail_item(subject='什么值得买', topic='什么值得买', txt=txt, minutes_delay=10, deadline=None, cover=False)
+        except:
+            continue
 
 def checkAll():
     urls = zdmWeb.objects.filter(gxFlag = True)
