@@ -21,13 +21,13 @@ def loginAndDownload(request):  # 鐧婚檰鍑芥暟
     myMoives = moiveE.moives()
     header = {
         'Accept':'application/json, text/javascript, */*; q=0.01',
-        'Origin':'http://www.zimuzu.tv',
+        'Origin':'http://www.zmz2019.com',
         'X-Requested-With':'XMLHttpRequest',
         'User-Agent':'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/50.0.2661.94 Safari/537.36',
         'Content-Type': 'application/x-www-form-urlencoded',
     }
 
-    url = 'http://www.zimuzu.tv/User/Login/ajaxLogin'
+    url = 'http://www.zmz2019.com/User/Login/ajaxLogin'
 
     # postData="account=鐢ㄦ埛鍚�&password=瀵嗙爜&remember=1"
     login_session = requests.Session()
@@ -37,7 +37,7 @@ def loginAndDownload(request):  # 鐧婚檰鍑芥暟
     _cookies = (login_session.cookies)
     #print(login_session.status_code)
     #print(_cookies.get_dict())
-    url = 'http://www.zimuzu.tv/user/fav'
+    url = 'http://www.zmz2019.com/user/fav'
     f = login_session.get(url, headers=header)
     time.sleep(5)
     selector = etree.HTML(f.text)
