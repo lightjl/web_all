@@ -27,7 +27,11 @@ def do_with_rss(rss_url):
     d = feedparser.parse(rss_url)
     for i in d.entries:
         if download_this_or_not(i.title):
-            mv = moiveE.moiveE(i.title, i.magnet)
+            try:
+                mv = moiveE.moiveE(i.title, i.magnet)
+            except:
+                mv = moiveE.moiveE(i.title, i.ed2k)
+                
             myMoives.send(mv)
 
 def find_moives_from_rss(request):  # 
